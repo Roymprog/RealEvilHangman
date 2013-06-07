@@ -47,3 +47,5 @@ This app lets you play the old game of hangman. The difference with hangman is t
 
 <h2>Mock-ups:</h2>
 ![Link to Mock-ups](https://github.com/Roymprog/EvilHangman/blob/master/doc/)
+
+(another slider control will be implemented for the Evil/Normal gameplay handling)
