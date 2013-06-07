@@ -1,0 +1,90 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="5"
+        android:gravity="center"
+        android:text="Hangman" />
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+        
+        <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Amount of guesses left:" />
+        
+        <TextView
+        android:id="@+id/hangman_guesses"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="" />
+    </LinearLayout>
+
+	<TextView
+        android:id="@+id/text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="" />
+	
+	<TextView
+        android:id="@+id/letters_left"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="" />
+	
+        <TextView
+        android:layout_width="fill_parent"
+        android:gravity="center"
+        android:layout_above="@+id/hangman_view"
+        android:layout_height="wrap_content"
+        android:text="Word to be guessed:" />
+        
+        <TextView
+        android:id="@+id/hangman_view"
+        android:layout_width="fill_parent"
+        android:gravity="center"
+        android:layout_above="@+id/edit_message"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="" />
+        
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+
+	    <EditText android:id="@+id/edit_message"
+	        android:layout_weight="1"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:hint="@string/edit_message" />
+
+	    <Button
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/play_letter"
+	        android:onClick="getInput"/>
+	    
+	    <Button
+	        android:id="@+id/menu_button"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:left="0dp"
+	        android:text="@string/menu_button"
+	        android:onClick="showMenu" />
+    </LinearLayout>
+    
+</LinearLayout>

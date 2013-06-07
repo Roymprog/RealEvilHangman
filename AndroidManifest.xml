@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="nl.mprog.apps.EvilHangman6081282"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="11"
+        android:targetSdkVersion="17" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="nl.mprog.apps.EvilHangman6081282.MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="nl.mprog.apps.EvilHangman6081282.SettingsActivity"
+            android:label="@string/settings"
+            android:parentActivityName="nl.mprog.apps.EvilHangman6081282" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="nl.mprog.apps.EvilHangman6081282" />
+        </activity>
+        <activity
+            android:name="nl.mprog.apps.EvilHangman6081282.DisplayMessageActivity"
+            android:label="@string/title_activity_display_message"
+            android:parentActivityName="nl.mprog.apps.EvilHangman6081282" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="nl.mprog.apps.EvilHangman6081282" />
+        </activity>
+        <activity
+            android:name="nl.mprog.apps.EvilHangman6081282.DatabaseHelper"
+            android:label="@string/title_activity_database_helper" >
+        </activity>
+        <activity
+            android:name="nl.mprog.apps.EvilHangman6081282.RestartGameDialog"
+            android:label="@string/title_activity_restart_game_dialog"
+            android:parentActivityName="Dialog" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="Dialog" />
+        </activity>
+        <activity
+            android:name="nl.mprog.apps.EvilHangman6081282.HighScoresActivity"
+            android:label="@string/title_activity_high_scores"
+            android:parentActivityName="MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="MainActivity" />
+        </activity>
+        <activity
+            android:name="nl.mprog.apps.EvilHangman6081282.GamePlay"
+            android:label="@string/title_activity_game_play" >
+        </activity>
+        <activity
+            android:name="nl.mprog.apps.EvilHangman6081282.HighScore"
+            android:label="@string/title_activity_high_score" >
+        </activity>
+    </application>
+
+</manifest>
