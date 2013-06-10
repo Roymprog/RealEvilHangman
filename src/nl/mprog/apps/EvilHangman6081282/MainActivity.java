@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,7 +29,8 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 	private PopupMenu popupMenu;
 	public DatabaseHelper dbhelper = new DatabaseHelper(this);
 
-	public GamePlay gamePlay;
+	private GamePlayInterface gamePlay;
+	public GoodGamePlay goodGamePlay;
 	public HighScore highScore = new HighScore();
 	
 	@SuppressLint("NewApi")
@@ -67,6 +67,10 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 	       }
 	}
 	
+	public void setGamePlayInterface(GamePlayInterface gpi)
+	{
+		this.gamePlay = gpi;
+	}
 	// creates the database if database is not present
 	public void createDatabase(){
 		try {
@@ -106,8 +110,8 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 	// adds artificial whitespaces for displaying the hangman word 
 	public void updateHangmanWordDisplay(){
 		StringBuilder stringBuilder = new StringBuilder("");
-		for (int i = 0; i < gamePlay.hangmanWordLength; i++){
-			stringBuilder.append(gamePlay.hangmanCharacterList.get(i)).append("  ");
+		for (int i = 0; i < gamePlay.getWordLength(); i++){
+			stringBuilder.append(gamePlay.getHangmanCharacterList().get(i)).append("  ");
 		}
 		TextView hangmanView = (TextView) findViewById(R.id.hangman_view);
 		hangmanView.setText(stringBuilder.toString());
@@ -117,7 +121,7 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 	public void updateLettersLeftDisplay(){
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < 26; i++){
-			builder.append(gamePlay.lettersLeft.get(i)).append("  ");
+			builder.append(gamePlay.getLettersLeft().get(i)).append("  ");
 		}
 		TextView letterLeftView = (TextView) findViewById(R.id.letters_left);
 		letterLeftView.setText(builder.toString());
@@ -126,7 +130,7 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 	// updates the display of misguesses left
 	public void updateMisguessesLeftDisplay(){
 		TextView hangmanGuessesView = (TextView) findViewById(R.id.hangman_guesses);
-		hangmanGuessesView.setText(Integer.toString(gamePlay.misguesses));
+		hangmanGuessesView.setText(Integer.toString(gamePlay.getMisguesses()));
 	}
 	
 	// updates all views
@@ -173,7 +177,8 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 		setHangmanWord();
         hangmanWord = getHangmanWord();
         
-        gamePlay = new GamePlay(misguesses, hangmanWord, wordsInLibraryWithLength);
+        GamePlayInterface gpi = new EvilGamePlay(misguesses, hangmanWord, wordsInLibraryWithLength);
+        setGamePlayInterface(gpi);
         
         gamePlay.setSettings();
         setStartingDisplay();

@@ -59,12 +59,16 @@
                 android:value="MainActivity" />
         </activity>
         <activity
-            android:name="nl.mprog.apps.EvilHangman6081282.GamePlay"
+            android:name="nl.mprog.apps.EvilHangman6081282.GoodGamePlay"
             android:label="@string/title_activity_game_play" >
         </activity>
         <activity
             android:name="nl.mprog.apps.EvilHangman6081282.HighScore"
             android:label="@string/title_activity_high_score" >
+        </activity>
+        <activity
+            android:name="nl.mprog.apps.EvilHangman6081282.EvilGamePlay"
+            android:label="@string/title_activity_evil_game_play" >
         </activity>
     </application>
 

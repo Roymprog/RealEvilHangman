@@ -20,5 +20,6 @@
     <string name="title_activity_high_scores">High Scores</string>
     <string name="title_activity_game_play">GamePlay</string>
     <string name="title_activity_high_score">HighScore</string>
+    <string name="title_activity_evil_game_play">EvilGamePlay</string>
 
 </resources>
