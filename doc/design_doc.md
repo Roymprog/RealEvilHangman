@@ -49,7 +49,14 @@ This app lets you play the old game of hangman. The difference with hangman is t
 
 High score ruby scaffolded MySQL server containing:
 
-Played hangman word / Used guesses / Score
+Scaffold contains:
+- Played hangman word 
+- Used guesses 
+- Score
+ 
+Retrieve information from database with httpGetRequest as JSON or XML
+Put information in database with httpPost
+
 (Not sure how I want to implement it)
 
 
