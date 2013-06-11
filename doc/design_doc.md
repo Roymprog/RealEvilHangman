@@ -72,12 +72,17 @@ Word(String)
 
 <h3>New methods not present in normal hangman:</h3>
 
-- List <String> updateList (char c, List <String> wordList)
-  This method looks for the indices of the played character and sorts words with same indices.
-  The group with the most words will be returned
-  
 - List <String> getHangmanWordList (int wordLength)
   Method gets all words with a defined length and returns them as a list
+
+- List <String> updateList (char c, List <String> wordList)
+  The list retreived by getHangmanWordList will be updated
+  All words with the played letter at the same index will be stored in a map
+  The key will be an array of integers containing the indices of the played letter
+  The value will be a list of all the strings with the same indices
+  A counter with the same name as the indices will be increased every time a word is added to the corresponding list
+  (int 0, will count all the words with no index, int 13 will count all with indices 1 and 3 and 258 will count words with indices 2, 5 and 8)
+  The list with the most words will be returned 
 
 
 <h2>Mock-ups:</h2>
