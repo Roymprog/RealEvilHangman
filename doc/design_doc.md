@@ -73,7 +73,7 @@ Word(String)
 <h3>New methods not present in normal hangman:</h3>
 
 - List <String> getHangmanWordList (int wordLength)
-  Method gets all words with a defined length and returns them as a list
+  -  Method gets all words with a defined length and returns them as a list
 
 - List <String> updateList (char c, List <String> wordList)
   - The list retreived by getHangmanWordList will be updated
