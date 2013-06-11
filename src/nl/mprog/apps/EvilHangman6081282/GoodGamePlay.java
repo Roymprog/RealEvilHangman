@@ -25,7 +25,6 @@ public class GoodGamePlay implements GamePlayInterface{
 		this.misguesses = this.totalMisguesses = misguesses;
 		this.hangmanWord = hangmanWord;
 		this.wordsInLibraryWithLength = wordsInLibraryWithLength;
-		Log.d("warn", "GoodGamePlay!");
 	}
 
 	// handles all that involves playing a letter

@@ -84,6 +84,7 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 	public void getInput(View view){
 		EditText editText = (EditText) findViewById(R.id.edit_message);
 		gamePlay.playLetter(editText.getText().toString());
+		emptyTextField();
 		updateView();
 		checkEndGame();
 	}
@@ -161,6 +162,27 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 		return length;
 	}
 	
+	// gets the length of the word from local storage
+	public String getGamePlay(){
+		SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, this.MODE_PRIVATE);
+		String gameplay = sharedPref.getString("gameplay", "Evil");
+		return gameplay;
+	}
+	
+	// sets the current gameplay to Evil or Good gameplay
+	public void setGamePlay(String gameplay){
+		if (gameplay.equals("Good"))
+        {
+        	GamePlayInterface gpi = new GoodGamePlay(misguesses, hangmanWord, wordsInLibraryWithLength);
+        	setGamePlayInterface(gpi);
+        }
+        else if(gameplay.equals("Evil"))
+        {
+        	GamePlayInterface gpi = new EvilGamePlay(misguesses, hangmanWord, wordsInLibraryWithLength);
+        	setGamePlayInterface(gpi);
+        }
+	}
+		
 	// Puts the hangmanWord in internal storage
 	public void setHangmanWord(){
 		String word = dbhelper.getDatabaseWord(getWordLength());
@@ -171,14 +193,20 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 		editor.commit();
 	}
 	
+	// clears the input text field
+	public void emptyTextField(){
+		EditText editText = (EditText) findViewById(R.id.edit_message);
+		editText.setText("");
+	}
+	
 	// restarts the game data
 	public void startNewGame(){
 		misguesses = getMisguesses();
 		setHangmanWord();
         hangmanWord = getHangmanWord();
         
-        GamePlayInterface gpi = new EvilGamePlay(misguesses, hangmanWord, wordsInLibraryWithLength);
-        setGamePlayInterface(gpi);
+        String gameplay = getGamePlay();
+        setGamePlay(gameplay);
         
         gamePlay.setSettings();
         setStartingDisplay();

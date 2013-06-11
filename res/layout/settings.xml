@@ -67,6 +67,35 @@
             
         </LinearLayout> 
 
+        <TextView
+            android:id="@+id/gameplay"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Evil or Good gameplay:" />
+            
+        <LinearLayout android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+            
+            <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Evil" />
+            
+            <SeekBar
+                android:id="@+id/gameplay_seek_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.9"
+                android:max="1"
+                android:progress="10" />
+        
+            <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Good" />
+            
+        </LinearLayout> 
     </LinearLayout>
 
     

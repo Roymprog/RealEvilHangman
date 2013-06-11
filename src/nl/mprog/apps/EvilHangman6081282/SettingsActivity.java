@@ -21,6 +21,7 @@ public class SettingsActivity extends Activity implements OnSeekBarChangeListene
 	
 	private SeekBar wordLengthSeekBar;
 	private SeekBar misguessesSeekBar;
+	private SeekBar gameplaySeekBar;
 	
 	public int wordLength;
 	public int misguesses;
@@ -37,6 +38,9 @@ public class SettingsActivity extends Activity implements OnSeekBarChangeListene
 		
 		misguessesSeekBar = (SeekBar) findViewById(R.id.misguesses_seek_bar);
 		misguessesSeekBar.setOnSeekBarChangeListener(this);
+		
+		gameplaySeekBar = (SeekBar) findViewById(R.id.gameplay_seek_bar);
+		gameplaySeekBar.setOnSeekBarChangeListener(this);
 		
 		// Make sure we're running on Honeycomb or higher to use ActionBar APIs
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -74,15 +78,27 @@ public class SettingsActivity extends Activity implements OnSeekBarChangeListene
     	int progress = seekBar.getProgress() + 1;
     	if (seekBar == wordLengthSeekBar)
     	{
-    		//wordLength = progress;
     		setWordLengthPreference(progress);
 	        Toast.makeText(SettingsActivity.this, "Word length set to: " + progress, Toast.LENGTH_SHORT).show();
     	}
     	else if(seekBar == misguessesSeekBar)
     	{
-    		//misguesses = progress;
     		setMisguessesPreference(progress);
     		Toast.makeText(SettingsActivity.this, "Amount of misguesses set to: " + progress, Toast.LENGTH_SHORT).show();
+    	}
+    	else if(seekBar == gameplaySeekBar)
+    	{
+    		String gameplay = "";
+    		if (progress == 1)
+    		{
+    			gameplay = "Evil";
+    		}
+    		else if (progress == 2)
+    		{
+    			gameplay = "Good";
+    		}
+    		setGamePlayPreference(gameplay);
+    		Toast.makeText(SettingsActivity.this, "Gameplay set to: " + gameplay + " gameplay!", Toast.LENGTH_SHORT).show();
     	}
     }
     
@@ -106,6 +122,14 @@ public class SettingsActivity extends Activity implements OnSeekBarChangeListene
 		SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, this.MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPref.edit();
 		editor.putInt("wordLength", wordLength);
+		editor.commit();
+	}
+	
+	// sets the gameplay to Evil or Good gameplay
+	public void setGamePlayPreference(String gameplay){
+		SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, this.MODE_PRIVATE);
+		SharedPreferences.Editor editor = sharedPref.edit();
+		editor.putString("gameplay", gameplay);
 		editor.commit();
 	}
 }

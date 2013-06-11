@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.util.Log;
+import android.widget.EditText;
 
 public class EvilGamePlay implements GamePlayInterface{
 	
@@ -25,7 +26,6 @@ public class EvilGamePlay implements GamePlayInterface{
 		this.misguesses = this.totalMisguesses = misguesses;
 		this.hangmanWord = hangmanWord;
 		this.wordsInLibraryWithLength = wordsInLibraryWithLength;
-		Log.d("warn", "EvilGamePlay!");
 	}
 
 	// handles all that involves playing a letter
