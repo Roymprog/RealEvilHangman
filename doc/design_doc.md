@@ -27,7 +27,7 @@ This app lets you play the old game of hangman. The difference with hangman is t
 - Else if the user ran out of moves before guessing the word, the game should be stopped and the user should start a new game via the menu
 - The user will be able to input letters via the onscreen keyboard
 - The word length and amount of misguesses will be adjustable with a slide controller and the gameplay will be controlled by a switch
-- The app will have default values for the three settings; word length = 7, misguesses = 6 and gameplay = 'evil', set by PreferenceActivity
+- The app will have default values for the three settings; word length = 7, misguesses = 6 and gameplay = 'evil', set in sharedPreferences with default values 6, 7 and 'evil'
 - Settings should only be applied on new games
 - High scores will be based on the three selectable options in the menu
 
