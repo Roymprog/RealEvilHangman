@@ -50,6 +50,7 @@ This app lets you play the old game of hangman. The difference with hangman is t
 High score ruby scaffolded MySQL server containing:
 
 Scaffold contains:
+- Evil/Good gameplay
 - Played hangman word 
 - Used guesses 
 - Score
