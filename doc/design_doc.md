@@ -70,6 +70,7 @@ Word(String)
 
 <h3>Classes</h3>
 - MainActivity
+- DisplayVisualization(fragment)
 - HighScoresActivity
 - SettingsActivity
 - DatabaseHelper
