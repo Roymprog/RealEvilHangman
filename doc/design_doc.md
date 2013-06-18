@@ -27,7 +27,7 @@ This app lets you play the old game of hangman. The difference with hangman is t
 - Else if the user ran out of moves before guessing the word, the game should be stopped and the user should start a new game via the menu
 - The user will be able to input letters via the onscreen keyboard
 - The word length and amount of misguesses will be adjustable with a slide controller and the gameplay will be controlled by a switch
-- The app will have default values for the three settings; word length = 7, misguesses = 6 and gameplay = 'evil', set by PreferenceActivity
+- The app will have default values for the three settings; word length = 7, misguesses = 6 and gameplay = 'evil', set in sharedPreferences with default values 6, 7 and 'evil'
 - Settings should only be applied on new games
 - High scores will be based on the three selectable options in the menu
 
@@ -49,7 +49,15 @@ This app lets you play the old game of hangman. The difference with hangman is t
 
 High score ruby scaffolded MySQL server containing:
 
-Played hangman word / Used guesses / Score
+Scaffold contains:
+- Evil/Good gameplay
+- Played hangman word 
+- Used guesses 
+- Score
+ 
+Retrieve information from database with httpGetRequest as JSON or XML
+Put information in database with httpPost
+
 (Not sure how I want to implement it)
 
 
@@ -62,6 +70,7 @@ Word(String)
 
 <h3>Classes</h3>
 - MainActivity
+- DisplayVisualization(fragment)
 - HighScoresActivity
 - SettingsActivity
 - DatabaseHelper
@@ -72,12 +81,17 @@ Word(String)
 
 <h3>New methods not present in normal hangman:</h3>
 
-- List <String> updateList (char c, List <String> wordList)
-  This method looks for the indices of the played character and sorts words with same indices.
-  The group with the most words will be returned
-  
 - List <String> getHangmanWordList (int wordLength)
-  Method gets all words with a defined length and returns them as a list
+  -  Method gets all words with a defined length and returns them as a list
+
+- List <String> updateList (char c, List <String> wordList)
+  - The list retreived by getHangmanWordList will be updated
+  - All words with the played letter at the same index will be stored in a map
+  - The key will be an array of integers containing the indices of the played letter
+  - The value will be a list of all the strings with the same indices
+  - A counter with the same name as the indices will be increased every time a word is added to the corresponding list
+  (int 0, will count all the words with no index, int 13 will count all with indices 1 and 3 and 258 will count words with indices 2, 5 and 8)
+  - The list with the most words will be returned 
 
 
 <h2>Mock-ups:</h2>
