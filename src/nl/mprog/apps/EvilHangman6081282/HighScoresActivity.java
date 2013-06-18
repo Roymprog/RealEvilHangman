@@ -1,9 +1,13 @@
 package nl.mprog.apps.EvilHangman6081282;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
@@ -16,17 +20,43 @@ import android.widget.TextView;
 public class HighScoresActivity extends Activity implements OnClickListener {
 
 	public final static String HIGH_SCORES = "nl.mprog.apps.EvilHangman6081282.HIGH_SCORES";
+	public final static String HANGMAN_VARIABLES = "nl.mprog.apps.EvilHangman6081282.HANGMAN_VARIABLES";
 	
 	public HighScore highScore = new HighScore();
+	
+	public List<List> highScoresData = new ArrayList<List>();
+	public List<String> gameplays = new ArrayList<String>();
+	public List<String> scores = new ArrayList<String>();
+	public List<String> used_guesses = new ArrayList<String>();
+	public List<String> words = new ArrayList<String>();
+	
+	public MainActivity main = new MainActivity();
+	
+	public List<String> achievedScore = new ArrayList<String>();
 	
 	// Sets the content layout, fills table with high scores
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		setAchievedScore();
+		AsynchTask ast = new AsynchTask();
+		ast.execute(achievedScore);
+		try {
+			highScoresData = ast.get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		fillIndividualDataLists();
+		
 		// gets all highscores from database and moves to highest score
-		Cursor cur = highScore.getHighScores();
-		cur.moveToFirst();
+//		Cursor cur = highScore.getHighScores();
+//		cur.moveToFirst();
 		
 		// column numbers of the corresponding data
 		int hangmanWordPosition = 2;
@@ -43,10 +73,13 @@ public class HighScoresActivity extends Activity implements OnClickListener {
 		TextView wordHeader = new TextView(this);
 		TextView misguessesHeader = new TextView(this);
 		TextView scoreHeader = new TextView(this);
+		TextView gamePlay = new TextView(this);
 		
 		// sets textiew texts
         rankHeader.setText("Rank");
         rankHeader.setTypeface(Typeface.DEFAULT_BOLD);
+        gamePlay.setText("Gameplay");
+        gamePlay.setTypeface(Typeface.DEFAULT_BOLD);
         wordHeader.setText("Hangman word");
         wordHeader.setTypeface(Typeface.DEFAULT_BOLD);
         misguessesHeader.setText("Guesses");
@@ -59,6 +92,7 @@ public class HighScoresActivity extends Activity implements OnClickListener {
         // adds textviews to row and row to the layout
         TableRow row = new TableRow(this);
         row.addView(rankHeader);
+        row.addView(gamePlay);
         row.addView(wordHeader);
         row.addView(misguessesHeader);
         row.addView(scoreHeader);
@@ -82,10 +116,10 @@ public class HighScoresActivity extends Activity implements OnClickListener {
 	        score[i] = new TextView(this);
 	        
 	        rank[i].setText("Rank" + Integer.toString(i + 1));
-	        word[i].setText(cur.getString(hangmanWordPosition));
-	        misguesses[i].setText(Integer.toString(cur.getInt(misguessesPosition)));
+	        word[i].setText(words.get(i));
+	        misguesses[i].setText(used_guesses.get(i));
 	        misguesses[i].setGravity(android.view.Gravity.CENTER);
-	        score[i].setText(Integer.toString(cur.getInt(scorePosition)));
+	        score[i].setText(scores.get(i));
 	        score[i].setGravity(android.view.Gravity.CENTER);
 	        
 	        tr[i] = new TableRow(this);
@@ -94,7 +128,7 @@ public class HighScoresActivity extends Activity implements OnClickListener {
 	        tr[i].addView(misguesses[i]);
 	        tr[i].addView(score[i]);
 	        layout.addView(tr[i]);
-	        cur.moveToNext();
+	        //cur.moveToNext();
 	    }
 	    
 	    // makes a button for new game and adds onclicklistener
@@ -128,5 +162,47 @@ public class HighScoresActivity extends Activity implements OnClickListener {
 	 */
 	private void setupActionBar() {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
+	}
+	
+	public void fillIndividualDataLists(){
+		gameplays = highScoresData.get(0);
+		used_guesses = highScoresData.get(1);
+		scores = highScoresData.get(2);
+		words = highScoresData.get(3);
+	}
+	
+	public void setAchievedScore(){
+		achievedScore.add(getGamePlay());
+		achievedScore.add(Integer.toString(getMisguesses()));
+		achievedScore.add(getScore());
+		achievedScore.add(getHangmanWord());
+	}
+	
+	// gets the length of the word from local storage
+	public String getGamePlay(){
+		SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, MODE_PRIVATE);
+		String gameplay = sharedPref.getString("gameplay", "Evil");
+		return gameplay;
+	}
+	
+	// gets the length of the word from local storage
+	public String getScore(){
+		SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, MODE_PRIVATE);
+		String score = sharedPref.getString("score", "0");
+		return score;
+	}
+	
+	//Returns the Hangmanword that is currently in storage
+	public String getHangmanWord(){
+		SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, MODE_PRIVATE);
+		String hangmanWord = sharedPref.getString("hangmanWord", "NoWordPresent");
+		return hangmanWord;
+	}
+	
+	// gets the amount of misguesses left from internal storage
+	public int getMisguesses(){
+		SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, MODE_PRIVATE);
+		int amountOfGuesses = sharedPref.getInt("misguesses", 6);
+		return amountOfGuesses;
 	}
 }

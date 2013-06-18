@@ -105,10 +105,6 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
         findViewById(R.id.menu_button).setOnClickListener((OnClickListener) this);
 		
         updateView();
-        
-		// shows hangman word (keep this commented, need it later for debugging)
-		//TextView textView = (TextView) findViewById(R.id.text_view);
-		//textView.setText(gamePlay.hangmanWord);
 	}
 	
 	// adds artificial whitespaces for displaying the hangman word 
@@ -196,6 +192,14 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 		editor.commit();
 	}
 	
+	// Puts the hangmanWord in internal storage
+	public void setScore(int score){
+		SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, MODE_PRIVATE);
+		SharedPreferences.Editor editor = sharedPref.edit();
+		editor.putString("score", Integer.toString(score));
+		editor.commit();
+	}
+		
 	public void setHangmanWordList(){
 		hangmanWordList = dbhelper.getWordList(getWordLength());
 	}
@@ -241,6 +245,7 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 		}
 		else if(gamePlay.hasWon()){
 			int score = gamePlay.getScore();
+			setScore(score);
 			new AlertDialog.Builder(this).setTitle("Game won!").setMessage("You guessed the word "+ gamePlay.getFinalWord() +"! You got a score of "+ score +"!").setNegativeButton("To High Scores!", new DialogInterface.OnClickListener() {
 			    public void onClick(DialogInterface dialog, int which) {
 			    	startHighScoresActivity();

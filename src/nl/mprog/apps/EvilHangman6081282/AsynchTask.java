@@ -10,9 +10,14 @@ import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -21,7 +26,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 
-public class AsynchTask extends AsyncTask<Void, Void, List<List>> {
+public class AsynchTask extends AsyncTask<List<String>, Void, List<List>> {
     
 	public List<List> highScoresData = new ArrayList<List>();
 	public List<String> gameplays = new ArrayList<String>();
@@ -30,15 +35,14 @@ public class AsynchTask extends AsyncTask<Void, Void, List<List>> {
 	public List<String> words = new ArrayList<String>();
 	
 	@Override
-	protected List<List> doInBackground(Void... params) {
-			try {
-				retreiveHighScores();
-			} catch (XmlPullParserException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			addListsToData();
-		//parseXML();
+	protected List<List> doInBackground(List<String>... highScoreData) {
+		try {
+			addToScores(highScoreData[0]);
+			retreiveHighScores();
+		} catch (XmlPullParserException e) {
+			e.printStackTrace();
+		}
+		addListsToHighScoresData();
 		return highScoresData;
 	}
     
@@ -109,47 +113,54 @@ public class AsynchTask extends AsyncTask<Void, Void, List<List>> {
 				if(parser.getName().equals("gameplay")){
 					eventtype = parser.next();
 					gameplays.add(parser.getText());
-					Log.d("warn", parser.getText());
 				}
 				else if(parser.getName().equals("score")){
 					eventtype = parser.next();
 					scores.add(parser.getText());
-					Log.d("warn", parser.getText());
 				}
 				else if(parser.getName().equals("used-guesses")){
 					eventtype = parser.next();
 					used_guesses.add(parser.getText());
-					Log.d("warn", parser.getText());
 				}
 				else if(parser.getName().equals("word")){
 					eventtype = parser.next();
 					words.add(parser.getText());
-					Log.d("warn", parser.getText());
 				}
 			}
 			eventtype = parser.next();
 		}
 	}
 	
-	public void addListsToData(){
+	public void addListsToHighScoresData(){
 		highScoresData.add(gameplays);
 		highScoresData.add(used_guesses);
 		highScoresData.add(scores);
 		highScoresData.add(words);
 	}
-//	public List<String> getGameplays(){
-//		return gameplays;
-//	}
-//	
-//	public List<String> getUsedGuesses(){
-//		return used_guesses;
-//	}
-//	
-//	public List<String> getScores(){
-//		return scores;
-//	}
-//	
-//	public List<String> getWords(){
-//		return words;
-//	}
+	
+	public void addToScores(List<String> highScoreData){
+		String url = "http://frozen-savannah-9932.herokuapp.com/high_scores";
+		HttpClient httpClient = new DefaultHttpClient();
+		HttpPost httpPost = new HttpPost(url);
+		
+		try {
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+			nameValuePairs.add(new BasicNameValuePair("high_score[gameplay]", highScoreData.get(0)));
+			nameValuePairs.add(new BasicNameValuePair("high_score[used_guesses]", highScoreData.get(1)));
+			nameValuePairs.add(new BasicNameValuePair("high_score[score]", highScoreData.get(2)));
+			nameValuePairs.add(new BasicNameValuePair("high_score[word]", highScoreData.get(3)));
+			httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+			
+			HttpResponse response = httpClient.execute(httpPost);
+			
+			HttpEntity entity = response.getEntity();
+			
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
