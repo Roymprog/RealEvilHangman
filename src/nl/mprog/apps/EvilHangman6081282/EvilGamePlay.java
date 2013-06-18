@@ -1,33 +1,138 @@
 package nl.mprog.apps.EvilHangman6081282;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import android.util.Log;
-import android.widget.EditText;
 
 public class EvilGamePlay implements GamePlayInterface{
 	
 	public final static String HANGMAN_VARIABLES = "nl.mprog.apps.EvilHangman6081282.HANGMAN_VARIABLES";
 	public final static String HIGH_SCORES = "nl.mprog.apps.EvilHangman6081282.HIGH_SCORES";
 	
-	public static int totalMisguesses;
+	public int totalMisguesses;
 	public int misguesses;
-	public static int hangmanWordLength;
+	public int hangmanWordLength;
 	public int wordsInLibraryWithLength;
 	public String hangmanInput;
 	public String hangmanWord;
+	public List<String> hangmanWordList;
 	public static List<Character> lettersLeft = new ArrayList<Character>();
 	public static List<Character> hangmanCharacterList = new ArrayList<Character>();
 	
 	public HighScore highScore = new HighScore();
 	
-	public EvilGamePlay(int misguesses, String hangmanWord, int wordsInLibraryWithLength) {
-		this.misguesses = this.totalMisguesses = misguesses;
-		this.hangmanWord = hangmanWord;
+	public EvilGamePlay(int misguesses, int wordsInLibraryWithLength, int hangmanWordLength, List<String> wordList) {
+		this.misguesses = totalMisguesses = misguesses;
+		this.hangmanWordList = wordList;
+		this.hangmanWordLength = hangmanWordLength;
 		this.wordsInLibraryWithLength = wordsInLibraryWithLength;
+		setSettings();
 	}
 
+	public List<Integer> updateHangmanWordList(char playedLetter){
+		List <Integer> indices = new ArrayList<Integer>();
+		List <String> wordList = new ArrayList<String>();
+		List <List<Integer>> listOfListWithIndices = new ArrayList<List<Integer>>();
+		HashMap<List<Integer>, List<String>> wordListMap = new HashMap<List<Integer>, List<String>>();
+		
+		// puts all words with the played letter at the same index in a list
+		sortWordsWithSameIndices(indices, wordList, listOfListWithIndices, wordListMap, playedLetter);
+		
+		// returns the indices of the largest group of words, also replaces handmanWordList with the new list
+		indices = getLongestListOfWords(indices, wordList, listOfListWithIndices, wordListMap);
+		return indices;
+		
+//		for (String word : hangmanWordList){
+//			indices = findIndices(playedLetter, word);
+//			if(wordListMap.containsKey(indices))
+//			{
+//				int size = wordList.size();
+//				wordList = new ArrayList<String>();
+//				size = wordList.size();
+//				wordList = wordListMap.get(indices);
+//				size = wordList.size();
+//				wordList.add(word);
+//				wordListMap.put(indices, wordList);
+//			}
+//			else{
+//				wordList = new ArrayList<String>();
+//				wordList.add(word);
+//				wordListMap.put(indices, wordList);
+//				listOfListWithIndices.add(indices);
+//			}
+//		}
+//		List <String> longestList = new ArrayList<String>();
+//		int longest = 0;
+//		for (List<Integer> list : listOfListWithIndices){
+//			wordList = wordListMap.get(list);
+//			if(wordList.size() > longest){
+//				indices = list;
+//				longestList = wordList;
+//				longest = wordList.size();
+//			}
+//			else if (wordList.size() == longest)
+//			{
+//				if(indices.size() > list.size())
+//				{
+//					indices = list;
+//					longestList = wordList;
+//					longest = wordList.size();
+//				}
+//			}
+//		}
+	}
+	
+	public void sortWordsWithSameIndices(List<Integer> indices, 
+										 List<String> wordList, 
+										 List<List<Integer>> listOfListWithIndices, 
+										 HashMap<List<Integer>, List<String>> wordListMap,
+										 char playedLetter){
+		for (String word : hangmanWordList){
+			indices = findIndices(playedLetter, word);
+			if(wordListMap.containsKey(indices))
+			{
+				wordList = new ArrayList<String>();
+				wordList = wordListMap.get(indices);
+				wordList.add(word);
+				wordListMap.put(indices, wordList);
+			}
+			else{
+				wordList = new ArrayList<String>();
+				wordList.add(word);
+				wordListMap.put(indices, wordList);
+				listOfListWithIndices.add(indices);
+			}
+		}
+	}
+	
+	public List<Integer> getLongestListOfWords(List<Integer> indices, 
+												 List<String> wordList, 
+												 List<List<Integer>> listOfListWithIndices, 
+												 HashMap<List<Integer>, List<String>> wordListMap){
+		List <String> longestList = new ArrayList<String>();
+		int longest = 0;
+		for (List<Integer> list : listOfListWithIndices){
+			wordList = wordListMap.get(list);
+			if(wordList.size() > longest){
+				indices = list;
+				longestList = wordList;
+				longest = wordList.size();
+			}
+			else if (wordList.size() == longest)
+			{
+				if(indices.size() > list.size())
+				{
+					indices = list;
+					longestList = wordList;
+					longest = wordList.size();
+				}
+			}
+		}
+		hangmanWordList = new ArrayList<String>();
+		hangmanWordList = longestList;
+		return indices;
+	}
+	
 	// handles all that involves playing a letter
 	public void playLetter(String input){
 		int length = input.length();
@@ -35,7 +140,7 @@ public class EvilGamePlay implements GamePlayInterface{
 			char upperCaseLetter = Character.toUpperCase(input.charAt(0));
 			if (Character.isLetter(upperCaseLetter) && alreadyPlayed(upperCaseLetter) == false){
 				List<Integer> indices = new ArrayList<Integer>();
-				indices = findIndices(upperCaseLetter);
+				indices = updateHangmanWordList(upperCaseLetter);
 				if (indices.size() > 0){
 					changeHangmanWord(indices, upperCaseLetter);
 				}
@@ -48,18 +153,18 @@ public class EvilGamePlay implements GamePlayInterface{
 	
 	// sets the class variables for the hangman game that is played
 	public void setSettings(){
-		hangmanWordLength = this.hangmanWord.length();
         hangmanCharacterList = setHangmanCharacterArray();
 		setLettersLeft();
 	}
 	
 	// Looks for the indices of the played character in the hangman word
-	public List<Integer> findIndices(char character){
+	public List<Integer> findIndices(char character, String hangmanWord){
 		List<Integer> indices = new ArrayList<Integer>();
 		int start = 0;
-		while(hangmanWord.indexOf(character, start) >= 0){
-			indices.add(hangmanWord.indexOf(character, start));
-			start = hangmanWord.indexOf(character, start) + 1;
+		int index;
+		while((index = hangmanWord.indexOf(character, start)) >= 0){
+			indices.add(index);
+			start = index + 1;
 		}
 		return indices;
 	}
@@ -132,12 +237,7 @@ public class EvilGamePlay implements GamePlayInterface{
 	
 	// checks for a lost game
 	public boolean hasLost(){
-		if (misguesses <= 0){
-			return true;
-		}
-		else{
-			return false;
-		}
+		return (misguesses <= 0);
 	}
 	
 	// calculates score
@@ -154,4 +254,13 @@ public class EvilGamePlay implements GamePlayInterface{
 		highScore.updateHighScores(score, hangmanWord, usedGuesses);
 		return score;
 	}
+	
+	// puts all good-guessed letters together to form the guessed word
+		public String getFinalWord(){
+			StringBuilder stringBuilder = new StringBuilder("");
+			for (char c : hangmanCharacterList){
+				stringBuilder.append(c);
+			}
+			return stringBuilder.toString();	
+		}
 }

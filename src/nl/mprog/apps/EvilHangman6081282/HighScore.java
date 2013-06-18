@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 
 public class HighScore extends Activity {
@@ -108,7 +107,6 @@ public class HighScore extends Activity {
 	public Cursor getHighScores(){
 		myDataBase = dbhelper.openDataBase();
 		Cursor cur = myDataBase.rawQuery("SELECT * FROM HIGH_SCORES ORDER BY score DESC", new String[] {});  
-		int i = cur.getColumnCount();
 		return cur;
 	}
 	

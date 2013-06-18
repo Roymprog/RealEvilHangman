@@ -3,16 +3,14 @@ package nl.mprog.apps.EvilHangman6081282;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.util.Log;
-
 public class GoodGamePlay implements GamePlayInterface{
 	
 	public final static String HANGMAN_VARIABLES = "nl.mprog.apps.EvilHangman6081282.HANGMAN_VARIABLES";
 	public final static String HIGH_SCORES = "nl.mprog.apps.EvilHangman6081282.HIGH_SCORES";
 	
-	public static int totalMisguesses;
+	public int totalMisguesses;
 	public int misguesses;
-	public static int hangmanWordLength;
+	public int hangmanWordLength;
 	public int wordsInLibraryWithLength;
 	public String hangmanInput;
 	public String hangmanWord;
@@ -25,6 +23,8 @@ public class GoodGamePlay implements GamePlayInterface{
 		this.misguesses = this.totalMisguesses = misguesses;
 		this.hangmanWord = hangmanWord;
 		this.wordsInLibraryWithLength = wordsInLibraryWithLength;
+		this.hangmanWordLength = hangmanWord.length();
+		setSettings();
 	}
 
 	// handles all that involves playing a letter
@@ -34,7 +34,7 @@ public class GoodGamePlay implements GamePlayInterface{
 			char upperCaseLetter = Character.toUpperCase(input.charAt(0));
 			if (Character.isLetter(upperCaseLetter) && alreadyPlayed(upperCaseLetter) == false){
 				List<Integer> indices = new ArrayList<Integer>();
-				indices = findIndices(upperCaseLetter);
+				indices = findIndices(upperCaseLetter, hangmanWord);
 				if (indices.size() > 0){
 					changeHangmanWord(indices, upperCaseLetter);
 				}
@@ -47,13 +47,12 @@ public class GoodGamePlay implements GamePlayInterface{
 	
 	// sets the class variables for the hangman game that is played
 	public void setSettings(){
-		hangmanWordLength = this.hangmanWord.length();
         hangmanCharacterList = setHangmanCharacterArray();
 		setLettersLeft();
 	}
 	
 	// Looks for the indices of the played character in the hangman word
-	public List<Integer> findIndices(char character){
+	public List<Integer> findIndices(char character, String hangmanWord){
 		List<Integer> indices = new ArrayList<Integer>();
 		int start = 0;
 		while(hangmanWord.indexOf(character, start) >= 0){
@@ -152,5 +151,14 @@ public class GoodGamePlay implements GamePlayInterface{
 		}
 		highScore.updateHighScores(score, hangmanWord, usedGuesses);
 		return score;
+	}
+	
+	// puts all good-guessed letters together to form the guessed word
+	public String getFinalWord(){
+		StringBuilder stringBuilder = new StringBuilder("");
+		for (char c : hangmanCharacterList){
+			stringBuilder.append(c);
+		}
+		return stringBuilder.toString();	
 	}
 }

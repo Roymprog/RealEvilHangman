@@ -4,6 +4,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import android.content.Context;
@@ -134,4 +136,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		String string = cur.getString(1);
 		return string;
 	}
+	public List<String> getWordList(int length){
+		openDataBase();
+		Cursor cur = myDataBase.rawQuery("SELECT _id"+length+" as _id,word"
+				+length+" from words_length_"+length,new String [] {});
+		int count = cur.getCount();
+		int i = 0;
+		List<String> wordlist = new ArrayList<String>(); 
+		while (i < count)
+		{
+			cur.moveToPosition(i);
+			wordlist.add(cur.getString(1));
+			i++;
+		}
+		return wordlist;
+	}
+	
 } 

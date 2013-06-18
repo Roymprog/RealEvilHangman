@@ -1,6 +1,7 @@
 package nl.mprog.apps.EvilHangman6081282;
 
 import java.io.IOException;
+import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -22,9 +23,10 @@ import android.widget.TextView;
 public class MainActivity extends Activity implements OnClickListener, OnMenuItemClickListener{
 		
 	public final static String HANGMAN_VARIABLES = "nl.mprog.apps.EvilHangman6081282.HANGMAN_VARIABLES";
-	public static int misguesses;
+	public int misguesses;
 	public static int wordsInLibraryWithLength;
 	public static String hangmanWord;
+	public List<String> hangmanWordList;
 	
 	private PopupMenu popupMenu;
 	public DatabaseHelper dbhelper = new DatabaseHelper(this);
@@ -71,6 +73,7 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 	{
 		this.gamePlay = gpi;
 	}
+	
 	// creates the database if database is not present
 	public void createDatabase(){
 		try {
@@ -143,28 +146,28 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 		
 	//Returns the Hangmanword that is currently in storage
 	public String getHangmanWord(){
-		SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, this.MODE_PRIVATE);
+		SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, MODE_PRIVATE);
 		String hangmanWord = sharedPref.getString("hangmanWord", "NoWordPresent");
 		return hangmanWord;
 	}
 	
 	// gets the amount of misguesses left from internal storage
 	public int getMisguesses(){
-		SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, this.MODE_PRIVATE);
+		SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, MODE_PRIVATE);
 		int amountOfGuesses = sharedPref.getInt("misguesses", 6);
 		return amountOfGuesses;
 	}
 	
 	// gets the length of the word from local storage
 	public int getWordLength(){
-		SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, this.MODE_PRIVATE);
+		SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, MODE_PRIVATE);
 		int length = sharedPref.getInt("wordLength", 7);
 		return length;
 	}
 	
 	// gets the length of the word from local storage
 	public String getGamePlay(){
-		SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, this.MODE_PRIVATE);
+		SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, MODE_PRIVATE);
 		String gameplay = sharedPref.getString("gameplay", "Evil");
 		return gameplay;
 	}
@@ -173,12 +176,12 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 	public void setGamePlay(String gameplay){
 		if (gameplay.equals("Good"))
         {
-        	GamePlayInterface gpi = new GoodGamePlay(misguesses, hangmanWord, wordsInLibraryWithLength);
+        	GamePlayInterface gpi = new GoodGamePlay(getMisguesses(), hangmanWord, wordsInLibraryWithLength);
         	setGamePlayInterface(gpi);
         }
         else if(gameplay.equals("Evil"))
         {
-        	GamePlayInterface gpi = new EvilGamePlay(misguesses, hangmanWord, wordsInLibraryWithLength);
+        	GamePlayInterface gpi = new EvilGamePlay(getMisguesses(), wordsInLibraryWithLength, getWordLength(), hangmanWordList);
         	setGamePlayInterface(gpi);
         }
 	}
@@ -187,10 +190,14 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 	public void setHangmanWord(){
 		String word = dbhelper.getDatabaseWord(getWordLength());
 		
-		SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, this.MODE_PRIVATE);
+		SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPref.edit();
 		editor.putString("hangmanWord", word);
 		editor.commit();
+	}
+	
+	public void setHangmanWordList(){
+		hangmanWordList = dbhelper.getWordList(getWordLength());
 	}
 	
 	// clears the input text field
@@ -201,14 +208,19 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 	
 	// restarts the game data
 	public void startNewGame(){
-		misguesses = getMisguesses();
-		setHangmanWord();
-        hangmanWord = getHangmanWord();
-        
-        String gameplay = getGamePlay();
+		String gameplay = getGamePlay();
+		if(gameplay.equals("Good")){
+			misguesses = getMisguesses();
+			setHangmanWord();
+			hangmanWord = getHangmanWord();
+		}
+		else if(gameplay.equals("Evil"))
+		{
+			setHangmanWordList();
+		}
+
         setGamePlay(gameplay);
         
-        gamePlay.setSettings();
         setStartingDisplay();
 	}
 	
@@ -229,7 +241,7 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 		}
 		else if(gamePlay.hasWon()){
 			int score = gamePlay.getScore();
-			new AlertDialog.Builder(this).setTitle("Game won!").setMessage("You guessed the word "+ hangmanWord +"! You got a score of "+ score +"!").setNegativeButton("To High Scores!", new DialogInterface.OnClickListener() {
+			new AlertDialog.Builder(this).setTitle("Game won!").setMessage("You guessed the word "+ gamePlay.getFinalWord() +"! You got a score of "+ score +"!").setNegativeButton("To High Scores!", new DialogInterface.OnClickListener() {
 			    public void onClick(DialogInterface dialog, int which) {
 			    	startHighScoresActivity();
 			    }

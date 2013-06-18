@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="SdCardPath">
+        <ignore path="src/nl/mprog/apps/EvilHangman6081282/DatabaseHelper.java" />
+    </issue>
+</lint>
