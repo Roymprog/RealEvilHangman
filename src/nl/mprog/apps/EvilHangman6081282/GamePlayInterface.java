@@ -4,7 +4,8 @@ import java.util.List;
 
 public interface GamePlayInterface {
 	public String hangmanWord = null;
-
+	public int misguesses = 0;
+	
 	public void playLetter(String input);
 
 	public void setSettings();

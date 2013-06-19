@@ -10,12 +10,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.TextView;
@@ -107,6 +110,35 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
         updateView();
 	}
 	
+	public void updateHangmanImageView(){
+			ImageView image = (ImageView) findViewById(R.id.hangman_image);
+			Resources res = getResources();
+			int totalAmountOfHangmanImages = 7;
+			int imageToBeDisplayed = totalAmountOfHangmanImages * gamePlay.getMisguesses() / getMisguesses();
+			Drawable drawable = res.getDrawable(R.drawable.hangmanimage7);
+			switch(imageToBeDisplayed){
+				case 1:
+					drawable = res.getDrawable(R.drawable.hangmanimage1);
+					break;
+				case 2:
+					drawable = res.getDrawable(R.drawable.hangmanimage2);
+					break;
+				case 3:
+					drawable = res.getDrawable(R.drawable.hangmanimage3);
+					break;
+				case 4:
+					drawable = res.getDrawable(R.drawable.hangmanimage4);
+					break;
+				case 5:
+					drawable = res.getDrawable(R.drawable.hangmanimage5);
+					break;
+				case 6:
+					drawable = res.getDrawable(R.drawable.hangmanimage6);
+					break;
+			}
+			image.setImageDrawable(drawable);
+	}
+	
 	// adds artificial whitespaces for displaying the hangman word 
 	public void updateHangmanWordDisplay(){
 		StringBuilder stringBuilder = new StringBuilder("");
@@ -135,6 +167,7 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 	
 	// updates all views
 	public void updateView(){
+		updateHangmanImageView();
 		updateHangmanWordDisplay();
 		updateMisguessesLeftDisplay();
 		updateLettersLeftDisplay();

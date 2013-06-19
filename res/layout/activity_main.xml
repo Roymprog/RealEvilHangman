@@ -4,12 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <TextView
+    <ImageView
+        android:id="@+id/hangman_image"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="5"
-        android:gravity="center"
-        android:text="Hangman" />
+        android:layout_height="330dp"
+        android:src="@drawable/hangmanimage7" />
     
     <LinearLayout
         android:layout_width="match_parent"
