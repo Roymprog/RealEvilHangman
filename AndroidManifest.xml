@@ -53,7 +53,15 @@
                 android:value="Dialog" />
         </activity>
         <activity
-            android:name="nl.mprog.apps.EvilHangman6081282.HighScoresActivity"
+            android:name="nl.mprog.apps.EvilHangman6081282.OnlineHighScoresActivity"
+            android:label="@string/title_activity_high_scores"
+            android:parentActivityName="MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="MainActivity" />
+        </activity>
+        <activity
+            android:name="nl.mprog.apps.EvilHangman6081282.OfflineHighScoresActivity"
             android:label="@string/title_activity_high_scores"
             android:parentActivityName="MainActivity" >
             <meta-data

@@ -13,6 +13,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,7 +37,7 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 
 	private GamePlayInterface gamePlay;
 	public GoodGamePlay goodGamePlay;
-	public HighScore highScore = new HighScore();
+	public HighScore highScore = new HighScore(dbhelper);
 	
 	@SuppressLint("NewApi")
 	@Override
@@ -49,7 +50,6 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         
         startNewGame();
-        setStartingDisplay();
 	}
 
 	@Override
@@ -61,6 +61,7 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 	public boolean onMenuItemClick(MenuItem item) {
 	       switch (item.getItemId()) {
 	       case R.id.new_game:
+	    	   		popupMenu.dismiss();
 	    	   		startNewGame();
 	    	   		return true;
 	       case R.id.settings:
@@ -113,9 +114,9 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 	public void updateHangmanImageView(){
 			ImageView image = (ImageView) findViewById(R.id.hangman_image);
 			Resources res = getResources();
-			int totalAmountOfHangmanImages = 7;
+			int totalAmountOfHangmanImages = 6;
 			int imageToBeDisplayed = totalAmountOfHangmanImages * gamePlay.getMisguesses() / getMisguesses();
-			Drawable drawable = res.getDrawable(R.drawable.hangmanimage7);
+			Drawable drawable = res.getDrawable(R.drawable.hangmanimage6);
 			switch(imageToBeDisplayed){
 				case 1:
 					drawable = res.getDrawable(R.drawable.hangmanimage1);
@@ -132,9 +133,9 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 				case 5:
 					drawable = res.getDrawable(R.drawable.hangmanimage5);
 					break;
-				case 6:
-					drawable = res.getDrawable(R.drawable.hangmanimage6);
-					break;
+			}
+			if(gamePlay.getMisguesses() == 0){
+				drawable = res.getDrawable(R.drawable.hangmanimage0);
 			}
 			image.setImageDrawable(drawable);
 	}
@@ -152,7 +153,8 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 	// Adds artificial whitespaces to the letters left
 	public void updateLettersLeftDisplay(){
 		StringBuilder builder = new StringBuilder();
-		for (int i = 0; i < 26; i++){
+		int lettersInAlphabet = 26;
+		for (int i = 0; i < lettersInAlphabet; i++){
 			builder.append(gamePlay.getLettersLeft().get(i)).append("  ");
 		}
 		TextView letterLeftView = (TextView) findViewById(R.id.letters_left);
@@ -205,12 +207,12 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 	public void setGamePlay(String gameplay){
 		if (gameplay.equals("Good"))
         {
-        	GamePlayInterface gpi = new GoodGamePlay(getMisguesses(), hangmanWord, wordsInLibraryWithLength);
+        	GamePlayInterface gpi = new GoodGamePlay(getMisguesses(), hangmanWord, wordsInLibraryWithLength, dbhelper);
         	setGamePlayInterface(gpi);
         }
         else if(gameplay.equals("Evil"))
         {
-        	GamePlayInterface gpi = new EvilGamePlay(getMisguesses(), wordsInLibraryWithLength, getWordLength(), hangmanWordList);
+        	GamePlayInterface gpi = new EvilGamePlay(getMisguesses(), wordsInLibraryWithLength, getWordLength(), hangmanWordList, dbhelper);
         	setGamePlayInterface(gpi);
         }
 	}
@@ -251,39 +253,64 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 			setHangmanWord();
 			hangmanWord = getHangmanWord();
 		}
-		else if(gameplay.equals("Evil"))
-		{
+		else if(gameplay.equals("Evil")){
 			setHangmanWordList();
 		}
 
         setGamePlay(gameplay);
         
         setStartingDisplay();
+        Log.d("warn", hangmanWord);
 	}
 	
 	// starts the highscoresactivity
-	public void startHighScoresActivity(){
-		Intent intent = new Intent(this, HighScoresActivity.class);
+	public void startOnlineHighScoresActivity(){
+		Intent intent = new Intent(this, OnlineHighScoresActivity.class);
+    	startActivity(intent);
+	}
+	
+	public void startOfflineHighScoresActivity(){
+		Intent intent = new Intent(this, OfflineHighScoresActivity.class);
     	startActivity(intent);
 	}
 	
 	// checks if the game has been won or lost and displays the right corresponding information
 	public void checkEndGame(){
 		if(gamePlay.hasLost()){
-			new AlertDialog.Builder(this).setTitle("Lost game").setMessage("You have lost a game of hangman. Please press the button to start a new game!").setNegativeButton("New game", new DialogInterface.OnClickListener() {
+			DialogInterface.OnClickListener onClick = new DialogInterface.OnClickListener() {
 			    public void onClick(DialogInterface dialog, int which) {
 			    	startNewGame();
 			    }
-			}).show();
+			};
+			new AlertDialog.Builder(this).setTitle("Lost game").setMessage("You have lost a game of hangman. Please press the button to start a new game!").setNegativeButton("New game", onClick).show();
 		}
 		else if(gamePlay.hasWon()){
-			int score = gamePlay.getScore();
+			final int score = gamePlay.getScore();
 			setScore(score);
-			new AlertDialog.Builder(this).setTitle("Game won!").setMessage("You guessed the word "+ gamePlay.getFinalWord() +"! You got a score of "+ score +"!").setNegativeButton("To High Scores!", new DialogInterface.OnClickListener() {
+			DialogInterface.OnClickListener onClickOnline = new DialogInterface.OnClickListener() {
 			    public void onClick(DialogInterface dialog, int which) {
-			    	startHighScoresActivity();
+			    	startOnlineHighScoresActivity();
 			    }
-			}).show();
+			};
+			DialogInterface.OnClickListener onClickOffline = new DialogInterface.OnClickListener() {
+			    public void onClick(DialogInterface dialog, int which) {
+			    	int usedGuesses = getMisguesses() - misguesses;
+			    	highScore.updateHighScores(score, hangmanWord, usedGuesses, getGamePlay());
+			    	startOfflineHighScoresActivity();
+			    }
+			};
+			new AlertDialog.Builder(this)
+							.setTitle("Game won!")
+							.setMessage("You guessed the word "+ gamePlay.getFinalWord() +"! You got a score of "+ score +"!")
+							.setNegativeButton("Submit score Online!", onClickOnline)
+							.setPositiveButton("Submit score Offline!", onClickOffline)
+							.show();
 		}
+	}
+	
+	public void showLoadingGameToast(){
+		DisplayToast dt = new DisplayToast(this);
+		dt.execute(dbhelper);
+		
 	}
 }

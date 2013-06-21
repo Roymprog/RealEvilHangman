@@ -40,19 +40,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     	if(dbExist){
     	}
     	else{
- 
     		//this method creates an empty database at the selected path
         	this.getReadableDatabase();
- 
         	try {
- 
     			copyDataBase();
- 
-    		} catch (IOException e) {
-        		throw new Error("Error copying database");
+    		}catch (IOException e) {
+    			throw new Error("Error copying database");
         	}
     	}
- 
     }
  
     // Checks if database is already in memory
@@ -72,7 +67,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     		checkDB.close();
  
     	}
-    	return checkDB != null ? true : false;
+    	return (checkDB != null);
     }
  
     // copies the database from assets to the right location data/data/nl.mprog.apps.EvilHangman6081282/databases/
@@ -105,22 +100,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // closes the database
     @Override
 	public synchronized void close() {
- 
-    	    if(myDataBase != null)
-    		    myDataBase.close();
- 
-    	    super.close();
- 
+	    if(myDataBase != null){
+	    	myDataBase.close();
+	    }
+	    super.close();
 	}
  
 	@Override
 	public void onCreate(SQLiteDatabase db) {
- 
+		// onCreate will not be used
 	}
  
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
- 
+		// onUpgrade will not be used, no need to update database
 	}
 	
 	// Gets a pseudorandom word of the given lenght from the database
@@ -132,10 +125,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		int count = cur.getCount();
 		MainActivity.wordsInLibraryWithLength = count;
 		int random = new Random().nextInt(count);
-		cur.move(random);
+		cur.move(random - 1);
 		String string = cur.getString(1);
 		return string;
 	}
+	
 	public List<String> getWordList(int length){
 		openDataBase();
 		Cursor cur = myDataBase.rawQuery("SELECT _id"+length+" as _id,word"
@@ -151,5 +145,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		}
 		return wordlist;
 	}
-	
 } 

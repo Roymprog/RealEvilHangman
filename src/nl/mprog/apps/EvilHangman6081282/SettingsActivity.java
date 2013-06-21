@@ -76,13 +76,11 @@ public class SettingsActivity extends Activity implements OnSeekBarChangeListene
 	// triggered when the seekbar value has changed
 	@Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        //Toast.makeText(DisplayMessageActivity.this, "Seekbar Value : " + progress, Toast.LENGTH_SHORT).show();
     }
 
 	// triggers when seek bar is touched
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
-        //Toast.makeText(DisplayMessageActivity.this, "Started Tracking Seekbar", Toast.LENGTH_SHORT).show();
     }
     
     // Upon stopping the change of a seekbar the values get evaluated and inserted in the corresponding constant
@@ -90,18 +88,24 @@ public class SettingsActivity extends Activity implements OnSeekBarChangeListene
     public void onStopTrackingTouch(SeekBar seekBar) {
     	seekBar.setSecondaryProgress(seekBar.getProgress());
     	int progress = seekBar.getProgress() + 1;
+    	Toast toast = Toast.makeText(SettingsActivity.this, "Toast!", Toast.LENGTH_SHORT);
     	if (seekBar == wordLengthSeekBar)
     	{
+    		toast.cancel();
     		setWordLengthPreference(progress);
-	        Toast.makeText(SettingsActivity.this, "Word length set to: " + progress, Toast.LENGTH_SHORT).show();
+	        toast = Toast.makeText(SettingsActivity.this, "Word length set to: " + progress, Toast.LENGTH_SHORT);
+	        toast.show();
     	}
     	else if(seekBar == misguessesSeekBar)
     	{
+    		toast.cancel();
     		setMisguessesPreference(progress);
-    		Toast.makeText(SettingsActivity.this, "Amount of misguesses set to: " + progress, Toast.LENGTH_SHORT).show();
+    		toast = Toast.makeText(SettingsActivity.this, "Amount of misguesses set to: " + progress, Toast.LENGTH_SHORT);
+    		toast.show();
     	}
     	else if(seekBar == gameplaySeekBar)
     	{
+    		toast.cancel();
     		String gameplay = "";
     		if (progress == 1){
     			gameplay = "Evil";
@@ -110,7 +114,8 @@ public class SettingsActivity extends Activity implements OnSeekBarChangeListene
     			gameplay = "Good";
     		}
     		setGamePlayPreference(gameplay);
-    		Toast.makeText(SettingsActivity.this, "Gameplay set to: " + gameplay + " gameplay!", Toast.LENGTH_SHORT).show();
+    		toast =Toast.makeText(SettingsActivity.this, "Gameplay set to: " + gameplay + " gameplay!", Toast.LENGTH_SHORT);
+    		toast.show();
     	}
     }
     

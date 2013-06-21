@@ -19,9 +19,11 @@ public class EvilGamePlay implements GamePlayInterface{
 	public static List<Character> lettersLeft = new ArrayList<Character>();
 	public static List<Character> hangmanCharacterList = new ArrayList<Character>();
 	
-	public HighScore highScore = new HighScore();
+	public DatabaseHelper dbhelper;
+	public HighScore highScore = new HighScore(dbhelper);
 	
-	public EvilGamePlay(int misguesses, int wordsInLibraryWithLength, int hangmanWordLength, List<String> wordList) {
+	public EvilGamePlay(int misguesses, int wordsInLibraryWithLength, int hangmanWordLength, List<String> wordList, DatabaseHelper dbhelper) {
+		this.dbhelper = dbhelper;
 		this.misguesses = totalMisguesses = misguesses;
 		this.hangmanWordList = wordList;
 		this.hangmanWordLength = hangmanWordLength;
@@ -251,7 +253,7 @@ public class EvilGamePlay implements GamePlayInterface{
 		else{
 			score = 0;
 		}
-		highScore.updateHighScores(score, hangmanWord, usedGuesses);
+		//highScore.updateHighScores(score, hangmanWord, usedGuesses);
 		return score;
 	}
 	

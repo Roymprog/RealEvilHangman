@@ -8,24 +8,23 @@
         android:id="@+id/hangman_image"
         android:layout_width="fill_parent"
         android:layout_height="330dp"
-        android:src="@drawable/hangmanimage7" />
+        android:src="@drawable/hangmanimage6" />
     
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:orientation="horizontal" >
         
         <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Amount of guesses left:" />
+        android:text="Amount of guesses left:       " />
         
         <TextView
         android:id="@+id/hangman_guesses"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:text="" />
     </LinearLayout>
 

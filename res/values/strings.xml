@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Evil Hangman</string>
-    <string name="edit_message">Enter a message</string>
+    <string name="edit_message">Play letter here!</string>
     <string name="edit_guesses">6</string>
     <string name="message">message</string>
     <string name="play_letter">Play letter!</string>

@@ -17,9 +17,11 @@ public class GoodGamePlay implements GamePlayInterface{
 	public static List<Character> lettersLeft = new ArrayList<Character>();
 	public static List<Character> hangmanCharacterList = new ArrayList<Character>();
 	
-	public HighScore highScore = new HighScore();
+	public DatabaseHelper dbhelper;
+	public HighScore highScore = new HighScore(dbhelper);
 	
-	public GoodGamePlay(int misguesses, String hangmanWord, int wordsInLibraryWithLength) {
+	public GoodGamePlay(int misguesses, String hangmanWord, int wordsInLibraryWithLength, DatabaseHelper dbhelper) {
+		this.dbhelper = dbhelper;
 		this.misguesses = this.totalMisguesses = misguesses;
 		this.hangmanWord = hangmanWord;
 		this.wordsInLibraryWithLength = wordsInLibraryWithLength;
@@ -108,14 +110,13 @@ public class GoodGamePlay implements GamePlayInterface{
 	
 	// checks if a letter has already been played
 	public boolean alreadyPlayed(char letterPlayed){
-		boolean played = true;
 		int spot;
 		spot = lettersLeft.indexOf(letterPlayed);
 		if(spot >= 0){
 			lettersLeft.set(spot, '_');
-			played = false;
+			return false;
 		}
-		return played;
+		return true;
 	}
 	
 	// checks for a won game
@@ -130,12 +131,7 @@ public class GoodGamePlay implements GamePlayInterface{
 	
 	// checks for a lost game
 	public boolean hasLost(){
-		if (misguesses <= 0){
-			return true;
-		}
-		else{
-			return false;
-		}
+		return (misguesses <= 0);
 	}
 	
 	// calculates score
@@ -149,7 +145,7 @@ public class GoodGamePlay implements GamePlayInterface{
 		else{
 			score = 0;
 		}
-		highScore.updateHighScores(score, hangmanWord, usedGuesses);
+		//highScore.updateHighScores(score, hangmanWord, usedGuesses);
 		return score;
 	}
 	

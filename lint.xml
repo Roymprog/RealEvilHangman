@@ -3,4 +3,5 @@
     <issue id="SdCardPath">
         <ignore path="src/nl/mprog/apps/EvilHangman6081282/DatabaseHelper.java" />
     </issue>
+    <issue id="ShowToast" severity="ignore" />
 </lint>
