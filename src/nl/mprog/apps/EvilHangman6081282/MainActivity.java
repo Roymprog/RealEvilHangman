@@ -268,16 +268,17 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
         setGamePlay(gameplay);
         
         setStartingDisplay();
-        Log.d("warn", hangmanWord);
 	}
 	
 	// starts the highscoresactivity
 	public void startOnlineHighScoresActivity(){
+		setGuessedHangmanWord();
 		Intent intent = new Intent(this, OnlineHighScoresActivity.class);
     	startActivity(intent);
 	}
 	
 	public void startOfflineHighScoresActivity(){
+		setGuessedHangmanWord();
 		Intent intent = new Intent(this, OfflineHighScoresActivity.class);
     	startActivity(intent);
 	}
@@ -313,6 +314,19 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 							.setNegativeButton("Submit score Online!", onClickOnline)
 							.setPositiveButton("Submit score Offline!", onClickOffline)
 							.show();
+		}
+	}
+	
+	// sets the hangmanWord to the guessed evil hangman word if evil gameplay is played
+	public void setGuessedHangmanWord(){
+		String gameplay = getGamePlay();
+		if(gameplay.equals("Evil")){
+			String word = gamePlay.getFinalWord();
+			
+			SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, MODE_PRIVATE);
+			SharedPreferences.Editor editor = sharedPref.edit();
+			editor.putString("hangmanWord", word);
+			editor.commit();
 		}
 	}
 	

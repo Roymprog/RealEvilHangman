@@ -37,9 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
  
     	boolean dbExist = checkDataBase();
  
-    	if(dbExist){
-    	}
-    	else{
+    	if(!dbExist){
     		//this method creates an empty database at the selected path
         	this.getReadableDatabase();
         	try {
@@ -108,12 +106,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
  
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		// onCreate will not be used
+		// onCreate will not be used, but must be implemented
 	}
  
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		// onUpgrade will not be used, no need to update database
+		// onUpgrade will not be used, but must be implemented
 	}
 	
 	// Gets a pseudorandom word of the given lenght from the database

@@ -43,45 +43,6 @@ public class EvilGamePlay implements GamePlayInterface{
 		// returns the indices of the largest group of words, also replaces handmanWordList with the new list
 		indices = getLongestListOfWords(indices, wordList, listOfListWithIndices, wordListMap);
 		return indices;
-		
-//		for (String word : hangmanWordList){
-//			indices = findIndices(playedLetter, word);
-//			if(wordListMap.containsKey(indices))
-//			{
-//				int size = wordList.size();
-//				wordList = new ArrayList<String>();
-//				size = wordList.size();
-//				wordList = wordListMap.get(indices);
-//				size = wordList.size();
-//				wordList.add(word);
-//				wordListMap.put(indices, wordList);
-//			}
-//			else{
-//				wordList = new ArrayList<String>();
-//				wordList.add(word);
-//				wordListMap.put(indices, wordList);
-//				listOfListWithIndices.add(indices);
-//			}
-//		}
-//		List <String> longestList = new ArrayList<String>();
-//		int longest = 0;
-//		for (List<Integer> list : listOfListWithIndices){
-//			wordList = wordListMap.get(list);
-//			if(wordList.size() > longest){
-//				indices = list;
-//				longestList = wordList;
-//				longest = wordList.size();
-//			}
-//			else if (wordList.size() == longest)
-//			{
-//				if(indices.size() > list.size())
-//				{
-//					indices = list;
-//					longestList = wordList;
-//					longest = wordList.size();
-//				}
-//			}
-//		}
 	}
 	
 	public void sortWordsWithSameIndices(List<Integer> indices, 
@@ -108,9 +69,9 @@ public class EvilGamePlay implements GamePlayInterface{
 	}
 	
 	public List<Integer> getLongestListOfWords(List<Integer> indices, 
-												 List<String> wordList, 
-												 List<List<Integer>> listOfListWithIndices, 
-												 HashMap<List<Integer>, List<String>> wordListMap){
+											   List<String> wordList, 
+											   List<List<Integer>> listOfListWithIndices, 
+											   HashMap<List<Integer>, List<String>> wordListMap){
 		List <String> longestList = new ArrayList<String>();
 		int longest = 0;
 		for (List<Integer> list : listOfListWithIndices){
@@ -258,11 +219,11 @@ public class EvilGamePlay implements GamePlayInterface{
 	}
 	
 	// puts all good-guessed letters together to form the guessed word
-		public String getFinalWord(){
-			StringBuilder stringBuilder = new StringBuilder("");
-			for (char c : hangmanCharacterList){
-				stringBuilder.append(c);
-			}
-			return stringBuilder.toString();	
+	public String getFinalWord(){
+		StringBuilder stringBuilder = new StringBuilder("");
+		for (char c : hangmanCharacterList){
+			stringBuilder.append(c);
 		}
+		return stringBuilder.toString();	
+	}
 }
