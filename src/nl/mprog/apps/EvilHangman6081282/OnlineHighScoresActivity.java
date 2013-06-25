@@ -96,7 +96,7 @@ public class OnlineHighScoresActivity extends Activity{
 	public void setAchievedScore(){
 		if(!getScore().equals("-1")){
 			achievedScore.add(getGamePlay());
-			achievedScore.add(Integer.toString(getMisguesses()));
+			achievedScore.add(Integer.toString(getUsedMisguesses()));
 			achievedScore.add(getScore());
 			achievedScore.add(getHangmanWord());
 		}
@@ -226,12 +226,12 @@ public class OnlineHighScoresActivity extends Activity{
 		String hangmanWord = sharedPref.getString("hangmanWord", "NoWordPresent");
 		return hangmanWord;
 	}
-	
-	// gets the amount of misguesses left from internal storage
-	public int getMisguesses(){
+
+	// Puts the hangmanWord in internal storage
+	public int getUsedMisguesses(){
 		SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, MODE_PRIVATE);
-		int amountOfGuesses = sharedPref.getInt("misguesses", 6);
-		return amountOfGuesses;
+		int usedGuesses = sharedPref.getInt("misguessesUsed", 10);
+		return usedGuesses;
 	}
 	
 	// Puts the hangmanWord in internal storage

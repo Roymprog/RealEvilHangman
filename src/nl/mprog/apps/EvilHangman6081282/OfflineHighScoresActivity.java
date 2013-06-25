@@ -23,6 +23,7 @@ public class OfflineHighScoresActivity extends Activity implements OnClickListen
 	public HighScore highScore = new HighScore(dbhelper);
 	
 	public TableLayout layout; 
+	public Cursor cur;
 	
 	// Sets the content layout, fills table with high scores
 	@Override
@@ -33,15 +34,25 @@ public class OfflineHighScoresActivity extends Activity implements OnClickListen
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		
 		// gets all highscores from database and moves to highest score
-		Cursor cur = highScore.getHighScores();
+		cur = highScore.getHighScores();
 		cur.moveToFirst();
 		
-		// column numbers of the corresponding data
-		int gamePlayPosition = 1;
-		int hangmanWordPosition = 2;
-		int misguessesPosition = 3;
-		int scorePosition = 4;
+		// draw the table headers and fill the rows
+		makeTableHeaders();
+		makeTableRows();
 		
+		// creates button for new game and button to online high scores
+	    makeNewGameButton();
+	    makeToOnlineHighScoresButton();
+	    
+	    // sets the constructed layout as content
+	    setContentView(layout);
+	    
+		// Show the Up button in the action bar.
+		setupActionBar();
+	}
+
+	public void makeTableHeaders(){
 		// initializes the layout for the table
 		layout = new TableLayout(this); 
 		layout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
@@ -76,8 +87,16 @@ public class OfflineHighScoresActivity extends Activity implements OnClickListen
         row.addView(misguessesHeader);
         row.addView(scoreHeader);
         layout.addView(row);
-        
-        // sets number of rows
+	}
+	
+	public void makeTableRows(){
+		// column numbers of the corresponding data
+		int gamePlayPosition = 1;
+		int hangmanWordPosition = 2;
+		int misguessesPosition = 3;
+		int scorePosition = 4;	
+		
+		// sets number of rows
         int numberOfRows = 10;
         
         // initializes table rows and textview arrays for rank, word, misguesses and score
@@ -115,17 +134,8 @@ public class OfflineHighScoresActivity extends Activity implements OnClickListen
 	        layout.addView(tr[i]);
 	        cur.moveToNext();
 	    }
-	    
-	    makeNewGameButton();
-	    makeToOnlineHighScoresButton();
-	    
-	    // sets the constructed layout as content
-	    setContentView(layout);
-	    
-		// Show the Up button in the action bar.
-		setupActionBar();
 	}
-
+	
 	// makes a button for new game and adds onclicklistener
 	public void makeNewGameButton(){
 	    Button button = new Button(this);

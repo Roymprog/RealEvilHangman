@@ -235,6 +235,14 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 		editor.commit();
 	}
 		
+	// sets the amount of used misguesses locally
+	public void setMisguessesLeft(){
+		SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, MODE_PRIVATE);
+		SharedPreferences.Editor editor = sharedPref.edit();
+		editor.putInt("misguessesUsed", (getMisguesses() - gamePlay.getMisguesses()));
+		editor.commit();
+	}
+	
 	public void setHangmanWordList(){
 		hangmanWordList = dbhelper.getWordList(getWordLength());
 	}
@@ -311,6 +319,5 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 	public void showLoadingGameToast(){
 		DisplayToast dt = new DisplayToast(this);
 		dt.execute(dbhelper);
-		
 	}
 }
