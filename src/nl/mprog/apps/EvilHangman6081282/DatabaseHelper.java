@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -19,7 +20,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static String DB_PATH = "/data/data/nl.mprog.apps.EvilHangman6081282/databases/";
 	private static String DB_NAME = "evilhangman.db";
-
+	public String TABLE_NAME = "HIGH_SCORES";
+	
 	private SQLiteDatabase myDataBase; 
 
 	public int wordsWithThisLength;
@@ -142,5 +144,46 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			i++;
 		}
 		return wordlist;
+	}
+	
+	/* adds new high score to the database */
+	public void insertHighScore(int score, String hangmanWord, int misguesses, String gamePlay){
+		ContentValues cv = new ContentValues();
+		String column = "hangman_word";
+		cv.put(column, hangmanWord);
+		column = "misguesses";
+		cv.put(column, misguesses);
+		column = "score";
+		cv.put(column, score);
+		column = "player";
+		cv.put(column, gamePlay);
+		myDataBase.insert(TABLE_NAME, null, cv);
+	}
+	
+	/* checks if score is high enough to be added to database */
+	public boolean scoreInDatabase(int score){
+		Cursor cur = myDataBase.rawQuery("SELECT * FROM HIGH_SCORES ORDER BY score ASC LIMIT 1", new String[] {});
+		cur.moveToFirst();
+		int lowestScore = cur.getInt(4);
+		return(score > lowestScore);
+	}
+	
+	/* counts the amount of high scores in database */
+	public int amountOfHighScores(){
+		Cursor cur = myDataBase.rawQuery("SELECT * FROM HIGH_SCORES", new String[] {});
+		int count = cur.getCount();
+		return count;
+	}
+	
+	/* deletes the lowest score from the database */
+	public void deleteLowestScoreFromDatabase(int lowestScore, int misguessesUsed){
+		myDataBase.execSQL("DELETE FROM HIGH_SCORES WHERE score = "+ lowestScore +" AND misguesses = "+ misguessesUsed +"");
+	}
+	
+	/* gets all the scores from database ranked from highest to lowest */
+	public Cursor getHighScores(){
+		openDataBase();
+		Cursor cur = myDataBase.rawQuery("SELECT * FROM HIGH_SCORES ORDER BY score DESC", new String[] {});
+		return cur;
 	}
 } 

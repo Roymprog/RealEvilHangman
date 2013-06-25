@@ -19,8 +19,6 @@ public class OfflineHighScoresActivity extends Activity{
 
 	public DatabaseHelper dbhelper = new DatabaseHelper(this);
 
-	public OfflineHighScoresModel offlineHighScoresModel = new OfflineHighScoresModel(dbhelper);
-
 	public TableLayout layout; 
 	public Cursor cur;
 
@@ -33,7 +31,7 @@ public class OfflineHighScoresActivity extends Activity{
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
 		// gets all highscores from database and moves to highest score
-		cur = offlineHighScoresModel.getHighScores();
+		cur = dbhelper.getHighScores();
 		cur.moveToFirst();
 
 		// draw the table headers and fill the rows

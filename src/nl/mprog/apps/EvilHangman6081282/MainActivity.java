@@ -13,6 +13,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,6 +50,7 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 		startNewGame();
+		Log.d("warn", hangmanWord);
 	}
 
 	/* Shows the menu on clicking the menu button */
