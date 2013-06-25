@@ -13,7 +13,6 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,60 +24,63 @@ import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.TextView;
 
 public class MainActivity extends Activity implements OnClickListener, OnMenuItemClickListener{
-		
+
 	public final static String HANGMAN_VARIABLES = "nl.mprog.apps.EvilHangman6081282.HANGMAN_VARIABLES";
 	public int misguesses;
 	public static int wordsInLibraryWithLength;
 	public static String hangmanWord;
 	public List<String> hangmanWordList;
-	
+
 	private PopupMenu popupMenu;
 	public DatabaseHelper dbhelper = new DatabaseHelper(this);
 
 	private GamePlayInterface gamePlay;
 	public GoodGamePlay goodGamePlay;
-	public HighScore highScore = new HighScore(dbhelper);
-	
+	public OfflineHighScoresModel offlineHighScoresModel = new OfflineHighScoresModel(dbhelper);
+
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		createDatabase();
-		
-        // prevents screen from switching to "landscape" orientation
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        
-        startNewGame();
+
+		// prevents screen from switching to "landscape" orientation
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+		startNewGame();
 	}
 
+	/* Shows the menu on clicking the menu button */
 	@Override
 	public void onClick(View v) {
 		popupMenu.show();
 	}
-	
+
+	/* Starts the corresponding actions when either new game or settings is clicked */
 	@Override
 	public boolean onMenuItemClick(MenuItem item) {
-	       switch (item.getItemId()) {
-	       case R.id.new_game:
-	    	   		popupMenu.dismiss();
-	    	   		startNewGame();
-	    	   		return true;
-	       case R.id.settings:
-	    	   		Intent intent = new Intent(this, SettingsActivity.class);
-	    	   		startActivity(intent);
-	    	   		return true;
-	       default:
-	    	   		return false;
-	       }
+		switch (item.getItemId()) {
+		case R.id.new_game:
+			popupMenu.dismiss();
+			startNewGame();
+			return true;
+		case R.id.settings:
+			Intent intent = new Intent(this, SettingsActivity.class);
+			startActivity(intent);
+			return true;
+		default:
+			return false;
+		}
 	}
-	
+
+	/* Sets the gamePlay interface */
 	public void setGamePlayInterface(GamePlayInterface gpi)
 	{
 		this.gamePlay = gpi;
 	}
-	
-	// creates the database if database is not present
+
+	/* Creates database if db is not present */
 	public void createDatabase(){
 		try {
 			dbhelper.createDataBase();
@@ -86,8 +88,8 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 			e.printStackTrace();
 		}
 	}
-	
-	// retrieves the sent information from the text field and continues gameplay
+
+	/* retrieves the sent information from the text field and continues gameplay */
 	public void getInput(View view){
 		EditText editText = (EditText) findViewById(R.id.edit_message);
 		gamePlay.playLetter(editText.getText().toString());
@@ -95,52 +97,54 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 		updateView();
 		checkEndGame();
 	}
-	
-	// sets the starting display of hangman
+
+	/* sets the starting display of hangman */
 	public void setStartingDisplay(){
 		// shows standard display
 		setContentView(R.layout.activity_main);
-		
+
 		//shows menu
 		popupMenu = new PopupMenu(this, findViewById(R.id.menu_button));
 		MenuInflater inflater = popupMenu.getMenuInflater();
 		inflater.inflate(R.menu.hangman_menu, popupMenu.getMenu());
-        popupMenu.setOnMenuItemClickListener((OnMenuItemClickListener) this);
-        findViewById(R.id.menu_button).setOnClickListener((OnClickListener) this);
-		
-        updateView();
+		popupMenu.setOnMenuItemClickListener((OnMenuItemClickListener) this);
+		findViewById(R.id.menu_button).setOnClickListener((OnClickListener) this);
+
+		updateView();
 	}
-	
+
+	/* Updates the image view to the image that corresponds with the amount of misguesses
+	 * left compared to the total amount of misguesses */
 	public void updateHangmanImageView(){
-			ImageView image = (ImageView) findViewById(R.id.hangman_image);
-			Resources res = getResources();
-			int totalAmountOfHangmanImages = 6;
-			int imageToBeDisplayed = totalAmountOfHangmanImages * gamePlay.getMisguesses() / getMisguesses();
-			Drawable drawable = res.getDrawable(R.drawable.hangmanimage6);
-			switch(imageToBeDisplayed){
-				case 1:
-					drawable = res.getDrawable(R.drawable.hangmanimage1);
-					break;
-				case 2:
-					drawable = res.getDrawable(R.drawable.hangmanimage2);
-					break;
-				case 3:
-					drawable = res.getDrawable(R.drawable.hangmanimage3);
-					break;
-				case 4:
-					drawable = res.getDrawable(R.drawable.hangmanimage4);
-					break;
-				case 5:
-					drawable = res.getDrawable(R.drawable.hangmanimage5);
-					break;
-			}
-			if(gamePlay.getMisguesses() == 0){
-				drawable = res.getDrawable(R.drawable.hangmanimage0);
-			}
-			image.setImageDrawable(drawable);
+		ImageView image = (ImageView) findViewById(R.id.hangman_image);
+		Resources res = getResources();
+		int totalAmountOfHangmanImages = 6;
+		int imageToBeDisplayed = totalAmountOfHangmanImages * gamePlay.getMisguesses() / getMisguesses();
+		Drawable drawable = res.getDrawable(R.drawable.hangmanimage6);
+		switch(imageToBeDisplayed){
+		case 1:
+			drawable = res.getDrawable(R.drawable.hangmanimage1);
+			break;
+		case 2:
+			drawable = res.getDrawable(R.drawable.hangmanimage2);
+			break;
+		case 3:
+			drawable = res.getDrawable(R.drawable.hangmanimage3);
+			break;
+		case 4:
+			drawable = res.getDrawable(R.drawable.hangmanimage4);
+			break;
+		case 5:
+			drawable = res.getDrawable(R.drawable.hangmanimage5);
+			break;
+		}
+		if(gamePlay.getMisguesses() == 0){
+			drawable = res.getDrawable(R.drawable.hangmanimage0);
+		}
+		image.setImageDrawable(drawable);
 	}
-	
-	// adds artificial whitespaces for displaying the hangman word 
+
+	/* adds artificial whitespaces for displaying the hangman word */ 
 	public void updateHangmanWordDisplay(){
 		StringBuilder stringBuilder = new StringBuilder("");
 		for (int i = 0; i < gamePlay.getWordLength(); i++){
@@ -149,8 +153,8 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 		TextView hangmanView = (TextView) findViewById(R.id.hangman_view);
 		hangmanView.setText(stringBuilder.toString());
 	}
-	
-	// Adds artificial whitespaces to the letters left
+
+	/* Adds artificial whitespaces to the letters left */
 	public void updateLettersLeftDisplay(){
 		StringBuilder builder = new StringBuilder();
 		int lettersInAlphabet = 26;
@@ -160,100 +164,101 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 		TextView letterLeftView = (TextView) findViewById(R.id.letters_left);
 		letterLeftView.setText(builder.toString());
 	}
-	
-	// updates the display of misguesses left
+
+	/* updates the display of misguesses left */
 	public void updateMisguessesLeftDisplay(){
 		TextView hangmanGuessesView = (TextView) findViewById(R.id.hangman_guesses);
 		hangmanGuessesView.setText(Integer.toString(gamePlay.getMisguesses()));
 	}
-	
-	// updates all views
+
+	/* updates all views */
 	public void updateView(){
 		updateHangmanImageView();
 		updateHangmanWordDisplay();
 		updateMisguessesLeftDisplay();
 		updateLettersLeftDisplay();
 	}
-		
-	//Returns the Hangmanword that is currently in storage
+
+	/* Returns the Hangmanword that is currently in storage */
 	public String getHangmanWord(){
 		SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, MODE_PRIVATE);
 		String hangmanWord = sharedPref.getString("hangmanWord", "NoWordPresent");
 		return hangmanWord;
 	}
-	
-	// gets the amount of misguesses left from internal storage
+
+	/* gets the amount of misguesses left from internal storage */
 	public int getMisguesses(){
 		SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, MODE_PRIVATE);
 		int amountOfGuesses = sharedPref.getInt("misguesses", 6);
 		return amountOfGuesses;
 	}
-	
-	// gets the length of the word from local storage
+
+	/* gets the length of the word from local storage */
 	public int getWordLength(){
 		SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, MODE_PRIVATE);
 		int length = sharedPref.getInt("wordLength", 7);
 		return length;
 	}
-	
-	// gets the length of the word from local storage
+
+	/* gets the length of the word from local storage */
 	public String getGamePlay(){
 		SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, MODE_PRIVATE);
 		String gameplay = sharedPref.getString("gameplay", "Evil");
 		return gameplay;
 	}
-	
-	// sets the current gameplay to Evil or Good gameplay
+
+	/* sets the current gameplay to Evil or Good gameplay */
 	public void setGamePlay(String gameplay){
 		if (gameplay.equals("Good"))
-        {
-        	GamePlayInterface gpi = new GoodGamePlay(getMisguesses(), hangmanWord, wordsInLibraryWithLength, dbhelper);
-        	setGamePlayInterface(gpi);
-        }
-        else if(gameplay.equals("Evil"))
-        {
-        	GamePlayInterface gpi = new EvilGamePlay(getMisguesses(), wordsInLibraryWithLength, getWordLength(), hangmanWordList, dbhelper);
-        	setGamePlayInterface(gpi);
-        }
+		{
+			GamePlayInterface gpi = new GoodGamePlay(getMisguesses(), hangmanWord, wordsInLibraryWithLength, dbhelper);
+			setGamePlayInterface(gpi);
+		}
+		else if(gameplay.equals("Evil"))
+		{
+			GamePlayInterface gpi = new EvilGamePlay(getMisguesses(), wordsInLibraryWithLength, getWordLength(), hangmanWordList, dbhelper);
+			setGamePlayInterface(gpi);
+		}
 	}
-		
-	// Puts the hangmanWord in internal storage
+
+	/* Puts the hangmanWord in internal storage */
 	public void setHangmanWord(){
 		String word = dbhelper.getDatabaseWord(getWordLength());
-		
+
 		SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPref.edit();
 		editor.putString("hangmanWord", word);
 		editor.commit();
 	}
-	
-	// Puts the hangmanWord in internal storage
+
+	/* Puts the hangmanWord in internal storage */
 	public void setScore(int score){
 		SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPref.edit();
 		editor.putString("score", Integer.toString(score));
 		editor.commit();
 	}
-		
-	// sets the amount of used misguesses locally
+
+	/* sets the amount of used misguesses locally */
 	public void setMisguessesLeft(){
 		SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPref.edit();
 		editor.putInt("misguessesUsed", (getMisguesses() - gamePlay.getMisguesses()));
 		editor.commit();
 	}
-	
+
+	/* puts the word list with all words of the same selected length in class variable */
 	public void setHangmanWordList(){
 		hangmanWordList = dbhelper.getWordList(getWordLength());
 	}
-	
-	// clears the input text field
+
+	/* clears the input text field */
 	public void emptyTextField(){
 		EditText editText = (EditText) findViewById(R.id.edit_message);
 		editText.setText("");
 	}
-	
-	// restarts the game data
+
+	/* restarts the game data */
 	public void startNewGame(){
 		String gameplay = getGamePlay();
 		if(gameplay.equals("Good")){
@@ -265,31 +270,32 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 			setHangmanWordList();
 		}
 
-        setGamePlay(gameplay);
-        
-        setStartingDisplay();
+		setGamePlay(gameplay);
+
+		setStartingDisplay();
 	}
-	
-	// starts the highscoresactivity
+
+	/* starts the highscoresactivity */
 	public void startOnlineHighScoresActivity(){
 		setGuessedHangmanWord();
 		Intent intent = new Intent(this, OnlineHighScoresActivity.class);
-    	startActivity(intent);
+		startActivity(intent);
 	}
-	
+
+	/* Starts the offlineHighScoresActivity */
 	public void startOfflineHighScoresActivity(){
 		setGuessedHangmanWord();
 		Intent intent = new Intent(this, OfflineHighScoresActivity.class);
-    	startActivity(intent);
+		startActivity(intent);
 	}
-	
-	// checks if the game has been won or lost and displays the right corresponding information
+
+	/* checks if the game has been won or lost and displays the right corresponding information */
 	public void checkEndGame(){
 		if(gamePlay.hasLost()){
 			DialogInterface.OnClickListener onClick = new DialogInterface.OnClickListener() {
-			    public void onClick(DialogInterface dialog, int which) {
-			    	startNewGame();
-			    }
+				public void onClick(DialogInterface dialog, int which) {
+					startNewGame();
+				}
 			};
 			new AlertDialog.Builder(this).setTitle("Lost game").setMessage("You have lost a game of hangman. Please press the button to start a new game!").setNegativeButton("New game", onClick).show();
 		}
@@ -297,39 +303,39 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 			final int score = gamePlay.getScore();
 			setScore(score);
 			DialogInterface.OnClickListener onClickOnline = new DialogInterface.OnClickListener() {
-			    public void onClick(DialogInterface dialog, int which) {
-			    	startOnlineHighScoresActivity();
-			    }
+				public void onClick(DialogInterface dialog, int which) {
+					startOnlineHighScoresActivity();
+				}
 			};
 			DialogInterface.OnClickListener onClickOffline = new DialogInterface.OnClickListener() {
-			    public void onClick(DialogInterface dialog, int which) {
-			    	int usedGuesses = getMisguesses() - misguesses;
-			    	highScore.updateHighScores(score, hangmanWord, usedGuesses, getGamePlay());
-			    	startOfflineHighScoresActivity();
-			    }
+				public void onClick(DialogInterface dialog, int which) {
+					int usedGuesses = getMisguesses() - misguesses;
+					offlineHighScoresModel.updateHighScores(score, hangmanWord, usedGuesses, getGamePlay());
+					startOfflineHighScoresActivity();
+				}
 			};
 			new AlertDialog.Builder(this)
-							.setTitle("Game won!")
-							.setMessage("You guessed the word "+ gamePlay.getFinalWord() +"! You got a score of "+ score +"!")
-							.setNegativeButton("Submit score Online!", onClickOnline)
-							.setPositiveButton("Submit score Offline!", onClickOffline)
-							.show();
+			.setTitle("Game won!")
+			.setMessage("You guessed the word "+ gamePlay.getFinalWord() +"! You got a score of "+ score +"!")
+			.setNegativeButton("Submit score Online!", onClickOnline)
+			.setPositiveButton("Submit score Offline!", onClickOffline)
+			.show();
 		}
 	}
-	
-	// sets the hangmanWord to the guessed evil hangman word if evil gameplay is played
+
+	/* sets the hangmanWord to the guessed evil hangman word if evil gameplay is played */
 	public void setGuessedHangmanWord(){
 		String gameplay = getGamePlay();
 		if(gameplay.equals("Evil")){
 			String word = gamePlay.getFinalWord();
-			
+
 			SharedPreferences sharedPref = this.getSharedPreferences(HANGMAN_VARIABLES, MODE_PRIVATE);
 			SharedPreferences.Editor editor = sharedPref.edit();
 			editor.putString("hangmanWord", word);
 			editor.commit();
 		}
 	}
-	
+
 	public void showLoadingGameToast(){
 		DisplayToast dt = new DisplayToast(this);
 		dt.execute(dbhelper);
