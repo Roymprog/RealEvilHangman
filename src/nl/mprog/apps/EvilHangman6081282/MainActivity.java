@@ -42,7 +42,7 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
 		createDatabase();
 
 		// prevents screen from switching to "landscape" orientation
@@ -216,7 +216,7 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 		}
 		else if(gameplay.equals("Evil"))
 		{
-			GamePlayInterface gpi = new EvilGamePlay(getMisguesses(), wordsInLibraryWithLength, getWordLength(), hangmanWordList, dbhelper);
+			GamePlayInterface gpi = new EvilGamePlay(getMisguesses(), getWordLength(), hangmanWordList, dbhelper);
 			setGamePlayInterface(gpi);
 		}
 	}

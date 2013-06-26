@@ -149,7 +149,7 @@ public class GoodGamePlay implements GamePlayInterface{
 		int maxWordLength = 24;
 		int maxAmountThatGetsScore = 25;
 		if (totalMisguesses != 26){
-			score = wordsInLibraryWithLength / totalMisguesses + (maxWordLength - hangmanWordLength) * (maxAmountThatGetsScore - usedGuesses);
+			score = (maxWordLength - hangmanWordLength) * (maxAmountThatGetsScore - usedGuesses) / 10;
 		}
 		else{
 			score = 0;

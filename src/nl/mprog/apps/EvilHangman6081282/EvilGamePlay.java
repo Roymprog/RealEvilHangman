@@ -22,12 +22,12 @@ public class EvilGamePlay implements GamePlayInterface{
 	public DatabaseHelper dbhelper;
 	public OfflineHighScoresModel offlineHighScoresModel = new OfflineHighScoresModel(dbhelper);
 
-	public EvilGamePlay(int misguesses, int wordsInLibraryWithLength, int hangmanWordLength, List<String> wordList, DatabaseHelper dbhelper) {
+	public EvilGamePlay(int misguesses, int hangmanWordLength, List<String> wordList, DatabaseHelper dbhelper) {
 		this.dbhelper = dbhelper;
 		this.misguesses = totalMisguesses = misguesses;
 		this.hangmanWordList = wordList;
 		this.hangmanWordLength = hangmanWordLength;
-		this.wordsInLibraryWithLength = wordsInLibraryWithLength;
+		this.wordsInLibraryWithLength = wordList.size();
 		setSettings();
 	}
 
@@ -222,9 +222,13 @@ public class EvilGamePlay implements GamePlayInterface{
 	public int getScore(){
 		int score;
 		int usedGuesses = totalMisguesses - misguesses;
-		int maxWordLength = 24;
 		if (totalMisguesses != 26){
-			score = wordsInLibraryWithLength * (1 / (26 - totalMisguesses)) - usedGuesses + (maxWordLength - hangmanWordLength);
+			if(usedGuesses > 0){
+				score = wordsInLibraryWithLength / (18 * usedGuesses) + hangmanWordLength - usedGuesses;
+			}
+			else{
+				score = wordsInLibraryWithLength + hangmanWordLength - usedGuesses;
+			}
 		}
 		else{
 			score = 0;
