@@ -13,7 +13,6 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,7 +49,6 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 		startNewGame();
-		Log.d("warn", hangmanWord);
 	}
 
 	/* Shows the menu on clicking the menu button */
@@ -299,7 +297,13 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 					startNewGame();
 				}
 			};
-			new AlertDialog.Builder(this).setTitle("Lost game").setMessage("You have lost a game of hangman. Please press the button to start a new game!").setNegativeButton("New game", onClick).show();
+			String title = this.getResources().getString(R.string.game_lost);
+			String lostMessage = this.getResources().getString(R.string.lost_message);
+			String newGame = this.getResources().getString(R.string.new_game);
+			new AlertDialog.Builder(this)
+			.setTitle(title)
+			.setMessage(lostMessage)
+			.setNegativeButton(newGame , onClick).show();
 		}
 		else if(gamePlay.hasWon()){
 			final int score = gamePlay.getScore();
@@ -311,16 +315,21 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 			};
 			DialogInterface.OnClickListener onClickOffline = new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
-					int usedGuesses = getMisguesses() - misguesses;
+					int usedGuesses = gamePlay.getTotalMisguesses() - gamePlay.getMisguesses();
 					offlineHighScoresModel.updateHighScores(score, hangmanWord, usedGuesses, getGamePlay());
 					startOfflineHighScoresActivity();
 				}
 			};
+			String title = this.getResources().getString(R.string.game_won);
+			String submitOnline = this.getResources().getString(R.string.submit_online);
+			String submitOffline = this.getResources().getString(R.string.submit_offline);
+			String winMessagePart1 = this.getResources().getString(R.string.win_message_part_1);
+			String winMessagePart2 = this.getResources().getString(R.string.win_message_part_2);
 			new AlertDialog.Builder(this)
-			.setTitle("Game won!")
-			.setMessage("You guessed the word "+ gamePlay.getFinalWord() +"! You got a score of "+ score +"!")
-			.setNegativeButton("Submit score Online!", onClickOnline)
-			.setPositiveButton("Submit score Offline!", onClickOffline)
+			.setTitle(title)
+			.setMessage(winMessagePart1 + " " + gamePlay.getFinalWord() +"! "+ winMessagePart2 + " " + score +"!")
+			.setNegativeButton(submitOnline, onClickOnline)
+			.setPositiveButton(submitOffline, onClickOffline)
 			.show();
 		}
 	}

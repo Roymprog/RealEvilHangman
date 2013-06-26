@@ -22,5 +22,7 @@ public interface GamePlayInterface {
 
 	public int getMisguesses();
 
+	public int getTotalMisguesses();
+	
 	public String getFinalWord();
 }

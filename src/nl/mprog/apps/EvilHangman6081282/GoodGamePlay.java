@@ -111,6 +111,11 @@ public class GoodGamePlay implements GamePlayInterface{
 		return misguesses;
 	}
 
+	/* returns the amount of misguesses left */
+	public int getTotalMisguesses(){
+		return totalMisguesses;
+	}
+	
 	/* checks if a letter has already been played */
 	public boolean alreadyPlayed(char letterPlayed){
 		int spot;
@@ -142,8 +147,9 @@ public class GoodGamePlay implements GamePlayInterface{
 		int score;
 		int usedGuesses = totalMisguesses - misguesses;
 		int maxWordLength = 24;
+		int maxAmountThatGetsScore = 25;
 		if (totalMisguesses != 26){
-			score = wordsInLibraryWithLength / totalMisguesses - usedGuesses + (maxWordLength - hangmanWordLength);
+			score = wordsInLibraryWithLength / totalMisguesses + (maxWordLength - hangmanWordLength) * (maxAmountThatGetsScore - usedGuesses);
 		}
 		else{
 			score = 0;

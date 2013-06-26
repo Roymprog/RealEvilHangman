@@ -28,13 +28,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private final Context myContext;
 
-	 /*The constructor*/
+	/* The constructor */
 	public DatabaseHelper(Context context) {
 		super(context, DB_NAME, null, 1);
 		this.myContext = context;
 	}	
 
-	/* Creates the database if it does not exist*/
+	/* Creates the database if it does not exist */
 	public void createDataBase() throws IOException{
 
 		boolean dbExist = checkDataBase();
@@ -50,7 +50,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		}
 	}
 
-	/*Checks if database is already in memory*/
+	/* Checks if database is already in memory */
 	private boolean checkDataBase(){
 
 		SQLiteDatabase checkDB = null;
@@ -70,7 +70,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return (checkDB != null);
 	}
 
-	/* copies the database from assets to the right location data/data/nl.mprog.apps.EvilHangman6081282/databases/*/
+	/* copies the database from assets to the right location data/data/nl.mprog.apps.EvilHangman6081282/databases/ */
 	private void copyDataBase() throws IOException{
 
 		InputStream myInput = myContext.getAssets().open(DB_NAME);
@@ -90,14 +90,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		myInput.close();
 	}
 
-	/*Opens the database for read and write purpose*/
+	/* Opens the database for read and write purpose */
 	public SQLiteDatabase openDataBase() throws SQLException{
 		String myPath = DB_PATH + DB_NAME;
 		myDataBase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
 		return myDataBase;
 	}
 
-	/* closes the database*/
+	/* closes the database */
 	@Override
 	public synchronized void close() {
 		if(myDataBase != null){
@@ -116,15 +116,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		// onUpgrade will not be used, but must be implemented
 	}
 
-	/*Gets a pseudorandom word of the given lenght from the database*/
+	/* Gets a pseudorandom word of the given lenght from the database */
 	public String getDatabaseWord(int length){
 		openDataBase();
 		Cursor cur = myDataBase.rawQuery("SELECT _id"+length+" as _id,word"
 				+length+" from words_length_"+length,new String [] {});
 		int count = cur.getCount();
 		MainActivity.wordsInLibraryWithLength = count;
-		int random = new Random().nextInt(count);
-		cur.move(random - 1);
+		int random = 0;
+		random = new Random().nextInt(count);
+		// plus 1 is because index 0 does not exist in the Cursor and nextInt 
+		// has a half-open end so count is never taken if it is the limit
+		cur.move(random + 1);
 		String string = cur.getString(1);
 		return string;
 	}

@@ -186,6 +186,11 @@ public class EvilGamePlay implements GamePlayInterface{
 		return misguesses;
 	}
 
+	/* returns the amount of misguesses left */
+	public int getTotalMisguesses(){
+		return totalMisguesses;
+	}
+	
 	/* checks if a letter has already been played */
 	public boolean alreadyPlayed(char letterPlayed){
 		boolean played = true;

@@ -12,7 +12,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_display_main">DisplayMainActivity</string>
     <string name="title_activity_database_helper">DatabaseHelper</string>
-    <string name="new_game">New game</string>
+    <string name="new_game">New game!</string>
     <string name="settings">Settings</string>
     <string name="menu_button">Menu</string>
     <string name="back">Back</string>
@@ -21,5 +21,12 @@
     <string name="title_activity_game_play">GamePlay</string>
     <string name="title_activity_high_score">HighScore</string>
     <string name="title_activity_evil_game_play">EvilGamePlay</string>
-
+    <string name="game_won">Game won!</string>
+    <string name="submit_online">Submit score online!</string>
+    <string name="submit_offline">Submit score offline!</string>
+    <string name="win_message_part_1">You guessed the word </string>
+    <string name="win_message_part_2">You got a score of </string>
+    <string name="game_lost">Game lost!</string>
+    <string name="lost_message">You have lost a game of hangman. Please press the button to start a new game!</string>
+    
 </resources>
