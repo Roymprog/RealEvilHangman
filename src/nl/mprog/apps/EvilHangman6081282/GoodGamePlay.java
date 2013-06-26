@@ -96,7 +96,7 @@ public class GoodGamePlay implements GamePlayInterface{
 		return hangmanWordLength;
 	}
 
-	// returns the individual hangman characters
+	/* returns the individual hangman characters */
 	public List<Character> getHangmanCharacterList(){
 		return hangmanCharacterList;
 	}

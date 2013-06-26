@@ -33,7 +33,7 @@ public class SettingsActivity extends Activity implements OnSeekBarChangeListene
 		initializeSeekBars();
 	}
 
-	/* initializes Seekbars with onclicklisteners and progress at right place */
+	/* initializes Seekbars with onclicklisteners and sets the progress at right place */
 	public void initializeSeekBars(){
 		wordLengthSeekBar = (SeekBar) findViewById(R.id.word_length_seek_bar);
 		wordLengthSeekBar.setOnSeekBarChangeListener(this);

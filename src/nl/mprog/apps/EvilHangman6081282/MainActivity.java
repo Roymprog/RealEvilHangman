@@ -291,6 +291,7 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 
 	/* checks if the game has been won or lost and displays the right corresponding information */
 	public void checkEndGame(){
+		// checks if the game has been lost and displays corresponding dialog
 		if(gamePlay.hasLost()){
 			DialogInterface.OnClickListener onClick = new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
@@ -305,6 +306,7 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 			.setMessage(lostMessage)
 			.setNegativeButton(newGame , onClick).show();
 		}
+		// checks if game has been won and displays corresponding dialog
 		else if(gamePlay.hasWon()){
 			final int score = gamePlay.getScore();
 			setScore(score);
@@ -345,10 +347,5 @@ public class MainActivity extends Activity implements OnClickListener, OnMenuIte
 			editor.putString("hangmanWord", word);
 			editor.commit();
 		}
-	}
-
-	public void showLoadingGameToast(){
-		DisplayToast dt = new DisplayToast(this);
-		dt.execute(dbhelper);
 	}
 }

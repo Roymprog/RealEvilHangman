@@ -3,8 +3,6 @@ package nl.mprog.apps.EvilHangman6081282;
 import java.util.List;
 
 public interface GamePlayInterface {
-	public String hangmanWord = null;
-	public int misguesses = 0;
 
 	public void playLetter(String input);
 

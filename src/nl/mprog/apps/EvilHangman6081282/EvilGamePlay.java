@@ -121,13 +121,13 @@ public class EvilGamePlay implements GamePlayInterface{
 		}
 	}
 
-	// sets the class variables for the hangman game that is played
+	/* sets the class variables for the hangman game that is played */
 	public void setSettings(){
 		hangmanCharacterList = setHangmanCharacterArray();
 		setLettersLeft();
 	}
 
-	// Looks for the indices of the played character in the hangman word
+	/* Looks for the indices of the played character in the hangman word */
 	public List<Integer> findIndices(char character, String hangmanWord){
 		List<Integer> indices = new ArrayList<Integer>();
 		int start = 0;
